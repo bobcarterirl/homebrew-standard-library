@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include "algorithm.hpp"
 
 namespace std
 {
@@ -67,29 +68,16 @@ namespace std
     // TODO get, tuple_element, tuple_size
 
     // Relational operators
-    // TODO use std::equal
     template<typename T, size_t N>
     bool operator== (const array<T, N>& lhs, const array<T, N>& rhs)
     {
-        for (auto lit = lhs.begin(), rit = rhs.begin(); lit != lhs.end(); lit++, rit++)
-        {
-            if (!(*lit == *rit)) return false;
-        }
-
-        return true;
+        return equal(lhs.begin(), lhs.end(), rhs.begin());
     }
 
-    // TODO use std::lexographical_compare
     template<typename T, size_t N>
     bool operator< (const array<T, N>& lhs, const array<T, N>& rhs)
     {
-        for (auto lit = lhs.begin(), rit = rhs.begin(); lit != lhs.end(); lit++, rit++)
-        {
-            if (*lit < *rit) return true;
-            else if (*rit < *lit) return false;
-        }
-
-        return false;
+        return lexographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
     }
 
     template<typename T, size_t N>
