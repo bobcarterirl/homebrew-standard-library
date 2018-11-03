@@ -108,6 +108,39 @@ void test_array()
         }
     }
 
+    {   // rbegin, rend, crbegin, crend
+        std::array<int, 5> arr;
+        for (auto it = arr.rbegin(); it != arr.rend(); it++)
+        {
+            assert(&*it >= &arr[0]);
+            assert(&*it <= &arr[4]);
+
+            *it = 8;
+        }
+
+        for (auto it = arr.rbegin(); it != arr.rend(); it++)
+        {
+            assert(*it == 8);
+        }
+
+        const auto& carr = arr;
+        for (auto it = carr.rbegin(); it != carr.rend(); it++)
+        {
+            assert(&*it >= &arr[0]);
+            assert(&*it <= &arr[4]);
+
+            assert(*it == 8);
+        }
+
+        for (auto it = carr.crbegin(); it != carr.crend(); it++)
+        {
+            assert(&*it >= &arr[0]);
+            assert(&*it <= &arr[4]);
+
+            assert(*it == 8);
+        }
+    }
+
     {   // fill
         std::array<int, 5> arr;
         arr.fill(10);

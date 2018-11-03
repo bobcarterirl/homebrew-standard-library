@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include "algorithm.hpp"
+#include "iterator.hpp"
 #include "stdexcept.hpp"
 
 namespace std
@@ -17,7 +18,8 @@ namespace std
         using const_pointer = const T*;
         using iterator = T*;
         using const_iterator = const T*;
-        // TODO reverse_iterator, const_""
+        using reverse_iterator = std::reverse_iterator<T*>;
+        using const_reverse_iterator = std::reverse_iterator<const T*>;
         using size_type = size_t;
         using difference_type = ptrdiff_t;
 
@@ -32,7 +34,14 @@ namespace std
         const T* cbegin() const noexcept;
         const T* cend() const noexcept;
 
-        // TODO (c)r[begin|end]
+        std::reverse_iterator<T*> rbegin() noexcept;
+        std::reverse_iterator<const T*> rbegin() const noexcept;
+
+        std::reverse_iterator<T*> rend() noexcept;
+        std::reverse_iterator<const T*> rend() const noexcept;
+
+        std::reverse_iterator<const T*> crbegin() const noexcept;
+        std::reverse_iterator<const T*> crend() const noexcept;
 
 
         // Capacity
@@ -67,7 +76,7 @@ namespace std
     };
 
 
-    // TODO get, tuple_element, tuple_size
+    // TODO get, tuple_element, tuple_size, begin, end
 
     // Relational operators
 
@@ -111,6 +120,24 @@ namespace std
 
     template<typename T, size_t N>
     const T* array<T, N>::cend() const noexcept { return arr+N; }
+
+    template<typename T, size_t N>
+    reverse_iterator<T*> array<T, N>::rbegin() noexcept { return std::reverse_iterator<T*>(end()); }
+
+    template<typename T, size_t N>
+    reverse_iterator<const T*> array<T, N>::rbegin() const noexcept { return std::reverse_iterator<const T*>(end()); }
+
+    template<typename T, size_t N>
+    reverse_iterator<T*> array<T, N>::rend() noexcept { return std::reverse_iterator<T*>(begin()); }
+
+    template<typename T, size_t N>
+    reverse_iterator<const T*> array<T, N>::rend() const noexcept { return std::reverse_iterator<const T*>(begin()); }
+
+    template<typename T, size_t N>
+    reverse_iterator<const T*> array<T, N>::crbegin() const noexcept { return std::reverse_iterator<const T*>(cend()); }
+
+    template<typename T, size_t N>
+    reverse_iterator<const T*> array<T, N>::crend() const noexcept { return std::reverse_iterator<const T*>(cbegin()); }
 
 
     // Capacity
