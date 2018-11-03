@@ -133,16 +133,18 @@ namespace std
     template<typename T, size_t N>
     const T& array<T, N>::operator[] (size_t n) const { return arr[n]; }
 
-    // TODO throw out_of_range if n >= N
+    // TODO more info in out_of_range
     template<typename T, size_t N>
     T& array<T, N>::at(size_t n)
     {
+        if (n >= N) throw std::out_of_range("std::array::at");
         return arr[n];
     }
 
     template<typename T, size_t N>
     const T& array<T, N>::at(size_t n) const
     {
+        if (n >= N) throw std::out_of_range("std::array::at");
         return arr[n];
     }
 

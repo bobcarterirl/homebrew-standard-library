@@ -50,6 +50,17 @@ void test_array()
         assert(carr.at(0) == 1);
         assert(carr.at(1) == 2);
         assert(carr.at(4) == 3);
+
+        bool throws_oor = false;
+        try
+        {
+            arr.at(5);
+        }
+        catch (const std::out_of_range& oor)
+        {
+            throws_oor = true;
+        }
+        assert(throws_oor);
     }
 
     {   // front, back
