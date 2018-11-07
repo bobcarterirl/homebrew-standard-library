@@ -44,6 +44,19 @@ bool operator!= (const reverse_iterator<Iter>& lhs, const reverse_iterator<Iter>
 // TODO <, <=, >, >=
 
 
+template<typename T>
+constexpr auto begin(T& t) -> decltype(t.begin());
+
+template<typename T>
+constexpr auto begin(const T& t) -> decltype(t.begin());
+
+template<typename T>
+constexpr auto end(T& t) -> decltype(t.end());
+
+template<typename T>
+constexpr auto end(const T& t) -> decltype(t.end());
+
+
 // Template member function implementations
 
 // Constructors
@@ -92,9 +105,21 @@ bool operator== (const reverse_iterator<Iter>& lhs, const reverse_iterator<Iter>
 }
 
 template<typename Iter>
-bool operator!= (const reverse_iterator<Iter>& lhs, const reverse_iterator<Iter>& rhs)
-{
-    return !(lhs == rhs);
-}
+bool operator!= (const reverse_iterator<Iter>& lhs, const reverse_iterator<Iter>& rhs) { return !(lhs == rhs); }
+
+
+// begin, end
+
+template<typename T>
+constexpr auto begin(T& t) -> decltype(t.begin()) { return t.begin(); }
+
+template<typename T>
+constexpr auto begin(const T& t) -> decltype(t.begin()) { return t.begin(); }
+
+template<typename T>
+constexpr auto end(T& t) -> decltype(t.end()) { return t.end(); }
+
+template<typename T>
+constexpr auto end(const T& t) -> decltype(t.end()) { return t.end(); }
 
 }
