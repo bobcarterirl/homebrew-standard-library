@@ -2,15 +2,17 @@
 
 #include "exception.hpp"
 
-namespace std
+namespace hbstl
 {
-    class logic_error : public exception
-    {   // TODO
-    };
 
-    class out_of_range : public logic_error
-    {
-    public:
-        explicit out_of_range(const char* what_arg);
-    };
+class logic_error : public exception
+{   // TODO
+};
+
+class out_of_range : public logic_error
+{
+public:
+    explicit out_of_range(const char* what_arg);
+};
+
 }

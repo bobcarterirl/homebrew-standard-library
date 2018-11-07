@@ -7,27 +7,27 @@ void test_array()
 {
     fprintf(stderr, "empty\n");
     {
-        std::array<bool, 0> mtra;
+        hbstl::array<bool, 0> mtra;
         static_assert(mtra.empty(), "mtra is empty");
 
-        std::array<int, 5> arr;
+        hbstl::array<int, 5> arr;
         static_assert(!arr.empty(), "arr isn't empty");
     }
 
     fprintf(stderr, "size, max_size\n");
     {
-        std::array<int, 5> arr;
+        hbstl::array<int, 5> arr;
         static_assert(arr.size() == 5, "arr has 5 elements");
         static_assert(arr.max_size() == 5, "arr can only have 5 elements");
 
-        std::array<int, 1024> big_arr;
+        hbstl::array<int, 1024> big_arr;
         static_assert(big_arr.size() == 1024, "big_arr has 1024 elements");
         static_assert(big_arr.max_size() == 1024, "big_arr can only have 1024 elements");
     }
 
     fprintf(stderr, "operator[]\n");
     {
-        std::array<int, 5> arr;
+        hbstl::array<int, 5> arr;
         arr[0] = 1;
         arr[1] = 2;
         arr[4] = 3;
@@ -43,7 +43,7 @@ void test_array()
 
     fprintf(stderr, "at\n");
     {
-        std::array<int, 5> arr;
+        hbstl::array<int, 5> arr;
         arr.at(0) = 1;
         arr.at(1) = 2;
         arr.at(4) = 3;
@@ -61,7 +61,7 @@ void test_array()
         {
             arr.at(5);
         }
-        catch (const std::out_of_range& oor)
+        catch (const hbstl::out_of_range& oor)
         {
             throws_oor = true;
         }
@@ -70,7 +70,7 @@ void test_array()
 
     fprintf(stderr, "front, back\n");
     {
-        std::array<int, 5> arr;
+        hbstl::array<int, 5> arr;
         arr.at(0) = 1;
         arr.at(4) = 2;
         assert(arr.front() == 1);
@@ -83,7 +83,7 @@ void test_array()
 
     fprintf(stderr, "begin, end, cbegin, cend\n");
     {
-        std::array<int, 5> arr;
+        hbstl::array<int, 5> arr;
         for (auto it = arr.begin(); it != arr.end(); it++)
         {
             assert(&*it >= &arr[0]);
@@ -117,7 +117,7 @@ void test_array()
 
     fprintf(stderr, "rbegin, rend, crbegin, crend\n");
     {
-        std::array<int, 5> arr;
+        hbstl::array<int, 5> arr;
         for (auto it = arr.rbegin(); it != arr.rend(); it++)
         {
             assert(&*it >= &arr[0]);
@@ -151,7 +151,7 @@ void test_array()
 
     fprintf(stderr, "fill\n");
     {
-        std::array<int, 5> arr;
+        hbstl::array<int, 5> arr;
         arr.fill(10);
 
         for (auto i : arr)
@@ -162,7 +162,7 @@ void test_array()
 
     fprintf(stderr, "relational operators\n");
     {
-        std::array<int, 5> arr1, arr2, arr3;
+        hbstl::array<int, 5> arr1, arr2, arr3;
 
         arr1.fill(0);
         arr2.fill(0);

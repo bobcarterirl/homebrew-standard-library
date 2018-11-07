@@ -1,10 +1,12 @@
 #include "exception.hpp"
 
-namespace std
+namespace hbstl
 {
-    // TODO print member
-    const char* exception::what() const noexcept
-    {
-        return "Error!";
-    }
+
+// TODO print member
+const char* exception::what() const noexcept
+{
+    return "Error!";
+}
+
 }

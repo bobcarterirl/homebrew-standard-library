@@ -1,10 +1,12 @@
 #pragma once
 
-namespace std
+namespace hbstl
 {
-    class exception
-    {   // TODO
-    public:
-        virtual const char* what() const noexcept;
-    };
+
+class exception
+{   // TODO
+public:
+    virtual const char* what() const noexcept;
+};
+
 }
