@@ -1,18 +1,10 @@
 #pragma once
 
-#include "exception.hpp"
+#include <stdexcept>
 
 namespace hbstl
 {
 
-class logic_error : public exception
-{   // TODO
-};
-
-class out_of_range : public logic_error
-{
-public:
-    explicit out_of_range(const char* what_arg);
-};
+using out_of_range = std::out_of_range;
 
 }
