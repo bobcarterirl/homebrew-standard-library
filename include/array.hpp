@@ -4,6 +4,7 @@
 #include "algorithm.hpp"
 #include "iterator.hpp"     // hbstl::begin, hbstl::end defined here
 #include "stdexcept.hpp"
+#include "utility.hpp"
 
 namespace hbstl
 {
@@ -69,8 +70,8 @@ public:
 
 
     // Modifiers
-    void fill (const T& val);
-    // TODO swap
+    void fill(const T& val);
+    void swap(array<T, N>& other);
 
 private:
     T arr[N];
@@ -198,6 +199,15 @@ const T* array<T, N>::data() const noexcept { return arr; }
 
 template<typename T, size_t N>
 void array<T, N>::fill (const T& val) { for (auto& x : arr) x = val; }
+
+template<typename T, size_t N>
+void array<T, N>::swap(array<T, N>& other)
+{
+    for (auto it1 = begin(), it2 = other.begin(); it1 != end(); ++it1, ++it2)
+    {
+        hbstl::swap(*it1, *it2);
+    }
+}
 
 
 // Template non-member function implementations

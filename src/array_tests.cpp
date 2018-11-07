@@ -5,7 +5,9 @@
 
 void test_array()
 {
-    fprintf(stderr, "empty\n");
+    fprintf(stderr, "Array tests\n");
+
+    fprintf(stderr, "\tempty\n");
     {
         hbstl::array<bool, 0> mtra;
         static_assert(mtra.empty(), "mtra is empty");
@@ -14,7 +16,7 @@ void test_array()
         static_assert(!arr.empty(), "arr isn't empty");
     }
 
-    fprintf(stderr, "size, max_size\n");
+    fprintf(stderr, "\tsize, max_size\n");
     {
         hbstl::array<int, 5> arr;
         static_assert(arr.size() == 5, "arr has 5 elements");
@@ -25,7 +27,7 @@ void test_array()
         static_assert(big_arr.max_size() == 1024, "big_arr can only have 1024 elements");
     }
 
-    fprintf(stderr, "operator[]\n");
+    fprintf(stderr, "\toperator[]\n");
     {
         hbstl::array<int, 5> arr;
         arr[0] = 1;
@@ -41,7 +43,7 @@ void test_array()
         assert(carr[4] == 3);
     }
 
-    fprintf(stderr, "at\n");
+    fprintf(stderr, "\tat\n");
     {
         hbstl::array<int, 5> arr;
         arr.at(0) = 1;
@@ -68,7 +70,7 @@ void test_array()
         assert(throws_oor);
     }
 
-    fprintf(stderr, "front, back\n");
+    fprintf(stderr, "\tfront, back\n");
     {
         hbstl::array<int, 5> arr;
         arr.at(0) = 1;
@@ -81,7 +83,7 @@ void test_array()
         assert(carr.back() == 2);
     }
 
-    fprintf(stderr, "begin, end, cbegin, cend\n");
+    fprintf(stderr, "\tbegin, end, cbegin, cend\n");
     {
         hbstl::array<int, 5> arr;
         for (auto it = arr.begin(); it != arr.end(); it++)
@@ -115,7 +117,7 @@ void test_array()
         }
     }
 
-    fprintf(stderr, "Non-member begin, end\n");
+    fprintf(stderr, "\tNon-member begin, end\n");
     {
         hbstl::array<int, 5> arr;
         for (auto it = hbstl::begin(arr); it != hbstl::end(arr); it++)
@@ -132,7 +134,7 @@ void test_array()
         }
     }
 
-    fprintf(stderr, "rbegin, rend, crbegin, crend\n");
+    fprintf(stderr, "\trbegin, rend, crbegin, crend\n");
     {
         hbstl::array<int, 5> arr;
         for (auto it = arr.rbegin(); it != arr.rend(); it++)
@@ -166,7 +168,7 @@ void test_array()
         }
     }
 
-    fprintf(stderr, "fill\n");
+    fprintf(stderr, "\tfill\n");
     {
         hbstl::array<int, 5> arr;
         arr.fill(10);
@@ -177,7 +179,28 @@ void test_array()
         }
     }
 
-    fprintf(stderr, "relational operators\n");
+    fprintf(stderr, "\tswap\n");
+    {
+        hbstl::array<int, 5> arr1;
+        arr1.fill(10);
+
+        hbstl::array<int, 5> arr2;
+        arr2.fill(20);
+
+        arr1.swap(arr2);
+
+        for (auto i : arr1)
+        {
+            assert(i == 20);
+        }
+
+        for (auto i : arr2)
+        {
+            assert(i == 10);
+        }
+    }
+
+    fprintf(stderr, "\trelational operators\n");
     {
         hbstl::array<int, 5> arr1, arr2, arr3;
 
