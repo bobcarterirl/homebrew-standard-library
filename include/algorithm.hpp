@@ -3,8 +3,8 @@
 namespace std
 {
     // TODO predicate
-    template<typename T1, typename T2>
-    bool equal(T1 first1, T1 last1, T2 first2)
+    template<typename II1, typename II2>
+    bool equal(II1 first1, II1 last1, II2 first2)
     {
         for (; first1 != last1; first1++, first2++)
         {
@@ -15,8 +15,8 @@ namespace std
     }
 
     // TODO custom
-    template<typename T1, typename T2>
-    bool lexographical_compare(T1 first1, T1 last1, T2 first2, T2 last2)
+    template<typename II1, typename II2>
+    bool lexographical_compare(II1 first1, II1 last1, II2 first2, II2 last2)
     {
         for (; first1 != last1 && first2 != last2; first1++, first2++)
         {
