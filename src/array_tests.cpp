@@ -115,6 +115,23 @@ void test_array()
         }
     }
 
+    fprintf(stderr, "Non-member begin, end\n");
+    {
+        hbstl::array<int, 5> arr;
+        for (auto it = hbstl::begin(arr); it != hbstl::end(arr); it++)
+        {
+            assert(&*it >= &arr[0]);
+            assert(&*it <= &arr[4]);
+
+            *it = 8;
+        }
+
+        for (auto it = hbstl::begin(arr); it != hbstl::end(arr); it++)
+        {
+            assert(*it == 8);
+        }
+    }
+
     fprintf(stderr, "rbegin, rend, crbegin, crend\n");
     {
         hbstl::array<int, 5> arr;
