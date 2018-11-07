@@ -1,10 +1,12 @@
 #include <cassert>
+#include <cstdio>
 #include "tests.hpp"
 #include "array.hpp"
 
 void test_array()
 {
-    {   // empty
+    fprintf(stderr, "empty\n");
+    {
         std::array<bool, 0> mtra;
         static_assert(mtra.empty(), "mtra is empty");
 
@@ -12,7 +14,8 @@ void test_array()
         static_assert(!arr.empty(), "arr isn't empty");
     }
 
-    {   // size, max_size
+    fprintf(stderr, "size, max_size\n");
+    {
         std::array<int, 5> arr;
         static_assert(arr.size() == 5, "arr has 5 elements");
         static_assert(arr.max_size() == 5, "arr can only have 5 elements");
@@ -22,7 +25,8 @@ void test_array()
         static_assert(big_arr.max_size() == 1024, "big_arr can only have 1024 elements");
     }
 
-    {   // operator[]
+    fprintf(stderr, "operator[]\n");
+    {
         std::array<int, 5> arr;
         arr[0] = 1;
         arr[1] = 2;
@@ -37,7 +41,8 @@ void test_array()
         assert(carr[4] == 3);
     }
 
-    {   // at
+    fprintf(stderr, "at\n");
+    {
         std::array<int, 5> arr;
         arr.at(0) = 1;
         arr.at(1) = 2;
@@ -63,7 +68,8 @@ void test_array()
         assert(throws_oor);
     }
 
-    {   // front, back
+    fprintf(stderr, "front, back\n");
+    {
         std::array<int, 5> arr;
         arr.at(0) = 1;
         arr.at(4) = 2;
@@ -75,7 +81,8 @@ void test_array()
         assert(carr.back() == 2);
     }
 
-    {   // begin, end, cbegin, cend
+    fprintf(stderr, "begin, end, cbegin, cend\n");
+    {
         std::array<int, 5> arr;
         for (auto it = arr.begin(); it != arr.end(); it++)
         {
@@ -108,7 +115,8 @@ void test_array()
         }
     }
 
-    {   // rbegin, rend, crbegin, crend
+    fprintf(stderr, "rbegin, rend, crbegin, crend\n");
+    {
         std::array<int, 5> arr;
         for (auto it = arr.rbegin(); it != arr.rend(); it++)
         {
@@ -141,7 +149,8 @@ void test_array()
         }
     }
 
-    {   // fill
+    fprintf(stderr, "fill\n");
+    {
         std::array<int, 5> arr;
         arr.fill(10);
 
@@ -151,7 +160,8 @@ void test_array()
         }
     }
 
-    {   // relational operators
+    fprintf(stderr, "relational operators\n");
+    {
         std::array<int, 5> arr1, arr2, arr3;
 
         arr1.fill(0);
