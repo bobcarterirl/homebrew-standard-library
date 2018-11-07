@@ -213,7 +213,7 @@ namespace std
     template<typename T, size_t N>
     bool operator< (const array<T, N>& lhs, const array<T, N>& rhs)
     {
-        return lexographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+        return lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
     }
 
     template<typename T, size_t N>
