@@ -2,7 +2,7 @@
 
 #include <cstddef>
 #include "algorithm.hpp"
-#include "iterator.hpp"
+#include "iterator.hpp"     // hbstl::begin, hbstl::end defined here
 #include "stdexcept.hpp"
 
 namespace hbstl
@@ -19,8 +19,8 @@ public:
     using const_pointer = const T*;
     using iterator = T*;
     using const_iterator = const T*;
-    using reverse_iterator = hbstl::reverse_iterator<T*>;
-    using const_reverse_iterator = hbstl::reverse_iterator<const T*>;
+    using reverse_iterator = reverse_iterator<T*>;
+    using const_reverse_iterator = reverse_iterator<const T*>;
     using size_type = std::size_t;
     using difference_type = std::ptrdiff_t;
 
@@ -35,14 +35,14 @@ public:
     const T* cbegin() const noexcept;
     const T* cend() const noexcept;
 
-    hbstl::reverse_iterator<T*> rbegin() noexcept;
-    hbstl::reverse_iterator<const T*> rbegin() const noexcept;
+    reverse_iterator<T*> rbegin() noexcept;
+    reverse_iterator<const T*> rbegin() const noexcept;
 
-    hbstl::reverse_iterator<T*> rend() noexcept;
-    hbstl::reverse_iterator<const T*> rend() const noexcept;
+    reverse_iterator<T*> rend() noexcept;
+    reverse_iterator<const T*> rend() const noexcept;
 
-    hbstl::reverse_iterator<const T*> crbegin() const noexcept;
-    hbstl::reverse_iterator<const T*> crend() const noexcept;
+    reverse_iterator<const T*> crbegin() const noexcept;
+    reverse_iterator<const T*> crend() const noexcept;
 
 
     // Capacity
@@ -123,22 +123,22 @@ template<typename T, std::size_t N>
 const T* array<T, N>::cend() const noexcept { return arr+N; }
 
 template<typename T, std::size_t N>
-reverse_iterator<T*> array<T, N>::rbegin() noexcept { return hbstl::reverse_iterator<T*>(end()); }
+reverse_iterator<T*> array<T, N>::rbegin() noexcept { return reverse_iterator<T*>(end()); }
 
 template<typename T, std::size_t N>
-reverse_iterator<const T*> array<T, N>::rbegin() const noexcept { return hbstl::reverse_iterator<const T*>(end()); }
+reverse_iterator<const T*> array<T, N>::rbegin() const noexcept { return reverse_iterator<const T*>(end()); }
 
 template<typename T, std::size_t N>
-reverse_iterator<T*> array<T, N>::rend() noexcept { return hbstl::reverse_iterator<T*>(begin()); }
+reverse_iterator<T*> array<T, N>::rend() noexcept { return reverse_iterator<T*>(begin()); }
 
 template<typename T, std::size_t N>
-reverse_iterator<const T*> array<T, N>::rend() const noexcept { return hbstl::reverse_iterator<const T*>(begin()); }
+reverse_iterator<const T*> array<T, N>::rend() const noexcept { return reverse_iterator<const T*>(begin()); }
 
 template<typename T, std::size_t N>
-reverse_iterator<const T*> array<T, N>::crbegin() const noexcept { return hbstl::reverse_iterator<const T*>(cend()); }
+reverse_iterator<const T*> array<T, N>::crbegin() const noexcept { return reverse_iterator<const T*>(cend()); }
 
 template<typename T, std::size_t N>
-reverse_iterator<const T*> array<T, N>::crend() const noexcept { return hbstl::reverse_iterator<const T*>(cbegin()); }
+reverse_iterator<const T*> array<T, N>::crend() const noexcept { return reverse_iterator<const T*>(cbegin()); }
 
 
 // Capacity
