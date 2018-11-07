@@ -2,19 +2,19 @@
 
 namespace std
 {
-    template<typename It>
+    template<typename Iter>
     class reverse_iterator
     {
     public:
-        using iterator_type = It;
-        // TODO iterator_trats<It> members
+        using iterator_type = Iter;
+        // TODO iterator_trats<Iter> members
 
         // Constructors
         reverse_iterator();
-        reverse_iterator(It it);
+        reverse_iterator(Iter it);
 
         // Accessors
-        It base() const;
+        Iter base() const;
 
         // TODO Arithmetic operators
 
@@ -24,21 +24,21 @@ namespace std
         // TODO +=, -=, --
 
         // Dereference operators
-        decltype(*It()) operator* () const;
+        decltype(*Iter()) operator* () const;
         // TODO ->, []
 
     private:
-        It it;
+        Iter it;
     };
 
 
     // Relational operators
 
-    template<typename It>
-    bool operator== (const reverse_iterator<It>& lhs, const reverse_iterator<It>& rhs);
+    template<typename Iter>
+    bool operator== (const reverse_iterator<Iter>& lhs, const reverse_iterator<Iter>& rhs);
 
-    template<typename It>
-    bool operator!= (const reverse_iterator<It>& lhs, const reverse_iterator<It>& rhs);
+    template<typename Iter>
+    bool operator!= (const reverse_iterator<Iter>& lhs, const reverse_iterator<Iter>& rhs);
 
     // TODO <, <=, >, >=
 
@@ -47,26 +47,26 @@ namespace std
 
     // Constructors
 
-    template<typename It>
-    reverse_iterator<It>::reverse_iterator() : it() {}
+    template<typename Iter>
+    reverse_iterator<Iter>::reverse_iterator() : it() {}
 
-    template<typename It>
-    reverse_iterator<It>::reverse_iterator(It it) : it(it) {}
+    template<typename Iter>
+    reverse_iterator<Iter>::reverse_iterator(Iter it) : it(it) {}
 
 
     // Accessors
 
-    template<typename It>
-    It reverse_iterator<It>::base() const { return it; }
+    template<typename Iter>
+    Iter reverse_iterator<Iter>::base() const { return it; }
 
 
     // Arithmetic assignment operators
 
-    template<typename It>
-    reverse_iterator<It>& reverse_iterator<It>::operator++ () { --it; }
+    template<typename Iter>
+    reverse_iterator<Iter>& reverse_iterator<Iter>::operator++ () { --it; }
 
-    template<typename It>
-    reverse_iterator<It> reverse_iterator<It>::operator++ (int)
+    template<typename Iter>
+    reverse_iterator<Iter> reverse_iterator<Iter>::operator++ (int)
     {
         auto temp = *this;
         --it;
@@ -76,22 +76,22 @@ namespace std
 
     // Dereference operators
 
-    template<typename It>
-    decltype(*It()) reverse_iterator<It>::operator* () const { return *(it-1); }
+    template<typename Iter>
+    decltype(*Iter()) reverse_iterator<Iter>::operator* () const { return *(it-1); }
 
 
     // Template non-member function implementations
 
     // Relational operators
 
-    template<typename It>
-    bool operator== (const reverse_iterator<It>& lhs, const reverse_iterator<It>& rhs)
+    template<typename Iter>
+    bool operator== (const reverse_iterator<Iter>& lhs, const reverse_iterator<Iter>& rhs)
     {
         return lhs.base() == rhs.base();
     }
 
-    template<typename It>
-    bool operator!= (const reverse_iterator<It>& lhs, const reverse_iterator<It>& rhs)
+    template<typename Iter>
+    bool operator!= (const reverse_iterator<Iter>& lhs, const reverse_iterator<Iter>& rhs)
     {
         return !(lhs == rhs);
     }
