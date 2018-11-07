@@ -9,27 +9,27 @@ void test_array()
 
     fprintf(stderr, "\tempty\n");
     {
-        hbstl::array<bool, 0> mtra;
+        hsl::array<bool, 0> mtra;
         static_assert(mtra.empty(), "mtra is empty");
 
-        hbstl::array<int, 5> arr;
+        hsl::array<int, 5> arr;
         static_assert(!arr.empty(), "arr isn't empty");
     }
 
     fprintf(stderr, "\tsize, max_size\n");
     {
-        hbstl::array<int, 5> arr;
+        hsl::array<int, 5> arr;
         static_assert(arr.size() == 5, "arr has 5 elements");
         static_assert(arr.max_size() == 5, "arr can only have 5 elements");
 
-        hbstl::array<int, 1024> big_arr;
+        hsl::array<int, 1024> big_arr;
         static_assert(big_arr.size() == 1024, "big_arr has 1024 elements");
         static_assert(big_arr.max_size() == 1024, "big_arr can only have 1024 elements");
     }
 
     fprintf(stderr, "\toperator[]\n");
     {
-        hbstl::array<int, 5> arr;
+        hsl::array<int, 5> arr;
         arr[0] = 1;
         arr[1] = 2;
         arr[4] = 3;
@@ -45,7 +45,7 @@ void test_array()
 
     fprintf(stderr, "\tat\n");
     {
-        hbstl::array<int, 5> arr;
+        hsl::array<int, 5> arr;
         arr.at(0) = 1;
         arr.at(1) = 2;
         arr.at(4) = 3;
@@ -63,7 +63,7 @@ void test_array()
         {
             arr.at(5);
         }
-        catch (const hbstl::out_of_range& oor)
+        catch (const hsl::out_of_range& oor)
         {
             throws_oor = true;
         }
@@ -72,7 +72,7 @@ void test_array()
 
     fprintf(stderr, "\tfront, back\n");
     {
-        hbstl::array<int, 5> arr;
+        hsl::array<int, 5> arr;
         arr.at(0) = 1;
         arr.at(4) = 2;
         assert(arr.front() == 1);
@@ -85,7 +85,7 @@ void test_array()
 
     fprintf(stderr, "\tbegin, end, cbegin, cend\n");
     {
-        hbstl::array<int, 5> arr;
+        hsl::array<int, 5> arr;
         for (auto it = arr.begin(); it != arr.end(); it++)
         {
             assert(&*it >= &arr[0]);
@@ -119,8 +119,8 @@ void test_array()
 
     fprintf(stderr, "\tNon-member begin, end\n");
     {
-        hbstl::array<int, 5> arr;
-        for (auto it = hbstl::begin(arr); it != hbstl::end(arr); it++)
+        hsl::array<int, 5> arr;
+        for (auto it = hsl::begin(arr); it != hsl::end(arr); it++)
         {
             assert(&*it >= &arr[0]);
             assert(&*it <= &arr[4]);
@@ -128,7 +128,7 @@ void test_array()
             *it = 8;
         }
 
-        for (auto it = hbstl::begin(arr); it != hbstl::end(arr); it++)
+        for (auto it = hsl::begin(arr); it != hsl::end(arr); it++)
         {
             assert(*it == 8);
         }
@@ -136,7 +136,7 @@ void test_array()
 
     fprintf(stderr, "\trbegin, rend, crbegin, crend\n");
     {
-        hbstl::array<int, 5> arr;
+        hsl::array<int, 5> arr;
         for (auto it = arr.rbegin(); it != arr.rend(); it++)
         {
             assert(&*it >= &arr[0]);
@@ -170,7 +170,7 @@ void test_array()
 
     fprintf(stderr, "\tfill\n");
     {
-        hbstl::array<int, 5> arr;
+        hsl::array<int, 5> arr;
         arr.fill(10);
 
         for (auto i : arr)
@@ -181,10 +181,10 @@ void test_array()
 
     fprintf(stderr, "\tswap\n");
     {
-        hbstl::array<int, 5> arr1;
+        hsl::array<int, 5> arr1;
         arr1.fill(10);
 
-        hbstl::array<int, 5> arr2;
+        hsl::array<int, 5> arr2;
         arr2.fill(20);
 
         arr1.swap(arr2);
@@ -202,7 +202,7 @@ void test_array()
 
     fprintf(stderr, "\trelational operators\n");
     {
-        hbstl::array<int, 5> arr1, arr2, arr3;
+        hsl::array<int, 5> arr1, arr2, arr3;
 
         arr1.fill(0);
         arr2.fill(0);

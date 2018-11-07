@@ -1,7 +1,11 @@
 #pragma once
 
-namespace hbstl
+#include <iterator>
+
+namespace hsl
 {
+
+using iterator = std::iterator;
 
 template<typename Iter>
 class reverse_iterator

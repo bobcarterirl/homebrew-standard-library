@@ -1,6 +1,6 @@
 #pragma once
 
-namespace hbstl
+namespace hsl
 {
 
 template<typename II1, typename II2>

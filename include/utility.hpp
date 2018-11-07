@@ -3,7 +3,7 @@
 #include <utility>
 #include "algorithm.hpp"
 
-namespace hbstl
+namespace hsl
 {
 
 template<typename T>

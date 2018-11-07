@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-namespace hbstl
+namespace hsl
 {
 
 using out_of_range = std::out_of_range;
