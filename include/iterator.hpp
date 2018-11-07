@@ -1,11 +1,40 @@
 #pragma once
 
-#include <iterator>
+#include "cstddef.hpp"
 
 namespace hsl
 {
 
-using iterator = std::iterator;
+// Iterator type tags
+
+struct input_iterator_tag {};
+struct output_iterator_tag {};
+struct forward_iterator_tag {};
+struct bidirectional_iterator_tag {};
+struct random_access_iterator_tag {};
+
+
+// Iterator traits
+template<typename Iter>
+struct iterator_traits
+{
+    using difference_type = typename Iter::difference_type;
+    using value_type = typename Iter::value_type;
+    using pointer = typename Iter::pointer;
+    using reference = typename Iter::reference;
+    using iterator_category = typename Iter::iterator_category;
+};
+
+template<typename T>
+struct iterator_traits<T*>
+{
+    using difference_type = hsl::ptrdiff_t;
+    using value_type = T;
+    using pointer = T*;
+    using reference = T&;
+    using iterator_category = random_access_iterator_tag;
+};
+
 
 template<typename Iter>
 class reverse_iterator
