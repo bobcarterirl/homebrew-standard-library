@@ -78,8 +78,6 @@ private:
 };
 
 
-// TODO get, tuple_element, tuple_size
-
 // Relational operators
 
 template<typename T, size_t N>
@@ -99,6 +97,20 @@ bool operator> (const array<T, N>& lhs, const array<T, N>& rhs);
 
 template<typename T, size_t N>
 bool operator>= (const array<T, N>& lhs, const array<T, N>& rhs);
+
+
+// Tuple interface
+
+template<size_t I, typename T, size_t N>
+constexpr T& get(array<T, N>& arr) noexcept;
+
+template<size_t I, typename T, size_t N>
+constexpr T& get(array<T, N>&& arr) noexcept;
+
+template<size_t I, typename T, size_t N>
+constexpr const T& get(const array<T, N>& arr) noexcept;
+
+// TODO tuple_element, tuple_size
 
 
 // Template member function implementations
@@ -248,6 +260,30 @@ template<typename T, size_t N>
 bool operator>= (const array<T, N>& lhs, const array<T, N>& rhs)
 {
     return !(lhs < rhs);
+}
+
+
+// Tuple interface
+
+template<size_t I, typename T, size_t N>
+constexpr T& get(array<T, N>& arr) noexcept
+{
+    static_assert(I < N, "I must be less than N");
+    return arr[I];
+}
+
+template<size_t I, typename T, size_t N>
+constexpr T& get(array<T, N>&& arr) noexcept
+{
+    static_assert(I < N, "I must be less than N");
+    return arr[I];
+}
+
+template<size_t I, typename T, size_t N>
+constexpr const T& get(const array<T, N>& arr) noexcept
+{
+    static_assert(I < N, "I must be less than N");
+    return arr[I];
 }
 
 }

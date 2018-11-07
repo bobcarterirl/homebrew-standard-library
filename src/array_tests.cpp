@@ -181,10 +181,8 @@ void test_array()
 
     fprintf(stderr, "\tswap\n");
     {
-        hsl::array<int, 5> arr1;
+        hsl::array<int, 5> arr1, arr2;
         arr1.fill(10);
-
-        hsl::array<int, 5> arr2;
         arr2.fill(20);
 
         arr1.swap(arr2);
@@ -232,5 +230,17 @@ void test_array()
         assert(arr1 >= arr2);
         assert(!(arr1 >= arr3));
         assert(arr3 >= arr1);
+    }
+
+    fprintf(stderr, "\tget\n");
+    {
+        hsl::array<int, 5> arr;
+        hsl::get<0>(arr) = 1;
+        hsl::get<1>(arr) = 2;
+        hsl::get<4>(arr) = 3;
+
+        assert(hsl::get<0>(arr) == 1);
+        assert(hsl::get<1>(arr) == 2);
+        assert(hsl::get<4>(arr) == 3);
     }
 }
