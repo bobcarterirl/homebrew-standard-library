@@ -4,6 +4,7 @@
 #include "algorithm.hpp"
 #include "iterator.hpp"     // hsl::begin, hsl::end defined here
 #include "stdexcept.hpp"
+#include "tuple.hpp"
 #include "type_traits.hpp"
 #include "utility.hpp"
 
@@ -81,6 +82,18 @@ public:
 };
 
 
+// Tuple helper class specializations
+
+template<size_t I, typename T, size_t N>
+struct tuple_element<I, array<T, N> >
+{
+    using type = T;
+};
+
+template<typename T, size_t N>
+struct tuple_size<array<T, N> > : public integral_constant<size_t, N> {};
+
+
 // Relational operators
 
 template<typename T, size_t N>
@@ -102,7 +115,7 @@ template<typename T, size_t N>
 bool operator>= (const array<T, N>& lhs, const array<T, N>& rhs);
 
 
-// Tuple interface
+// Tuple-style get
 
 template<size_t I, typename T, size_t N>
 constexpr T& get(array<T, N>& arr) noexcept;
@@ -112,8 +125,6 @@ constexpr T& get(array<T, N>&& arr) noexcept;
 
 template<size_t I, typename T, size_t N>
 constexpr const T& get(const array<T, N>& arr) noexcept;
-
-// TODO tuple_element, tuple_size
 
 
 // Template member function implementations
@@ -266,7 +277,7 @@ template<typename T, size_t N>
 bool operator>= (const array<T, N>& lhs, const array<T, N>& rhs) { return !(lhs < rhs); }
 
 
-// Tuple interface
+// Tuple-style get
 
 template<size_t I, typename T, size_t N>
 constexpr T& get(array<T, N>& arr) noexcept

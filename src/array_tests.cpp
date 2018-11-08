@@ -7,7 +7,7 @@ void test_array()
 {
     std::cerr << "array tests\n";
 
-    std::cerr << "constructors\n";
+    std::cerr << "\tconstructors\n";
     {
         hsl::array<int, 5> arr1;
         hsl::array<int, 5> arr2{1, 2, 3, 4, 5};
@@ -221,13 +221,16 @@ void test_array()
 
     std::cerr << "\tget\n";
     {
-        hsl::array<int, 5> arr;
-        hsl::get<0>(arr) = 1;
-        hsl::get<1>(arr) = 2;
-        hsl::get<4>(arr) = 3;
+        constexpr hsl::array<int, 5> arr{1, 2, 3, 4, 5};
+        static_assert(hsl::get<0>(arr) == 1, "arr[0] is 1");
+        static_assert(hsl::get<1>(arr) == 2, "arr[0] is 2");
+        static_assert(hsl::get<4>(arr) == 5, "arr[0] is 5");
+    }
 
-        assert(hsl::get<0>(arr) == 1);
-        assert(hsl::get<1>(arr) == 2);
-        assert(hsl::get<4>(arr) == 3);
+    std::cerr << "\ttuple_element, tuple_size\n";
+    {
+        hsl::array<int, 5> arr;
+        assert((std::is_same<hsl::tuple_element<0, decltype(arr)>::type, int>::value));
+        assert(hsl::tuple_size<decltype(arr)>::value == 5);
     }
 }
