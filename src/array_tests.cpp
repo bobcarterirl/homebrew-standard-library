@@ -5,11 +5,18 @@
 
 void test_array()
 {
-    fprintf(stderr, "Array tests\n");
+    fprintf(stderr, "array tests\n");
+
+    fprintf(stderr, "constructors\n");
+    {
+        hsl::array<int, 5> arr1;
+        hsl::array<int, 5> arr2{1, 2, 3, 4, 5};
+        hsl::array<int, 5> arr3 = arr2;
+    }
 
     fprintf(stderr, "\tempty\n");
     {
-        hsl::array<bool, 0> mtra;
+        hsl::array<int, 0> mtra;
         static_assert(mtra.empty(), "mtra is empty");
 
         hsl::array<int, 5> arr;

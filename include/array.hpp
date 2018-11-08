@@ -27,6 +27,11 @@ public:
     using difference_type = ptrdiff_t;
 
 
+    // Must be public for aggregate initialization to work.
+    // Don't access it directly; use data() method, instead.
+    T arr[N];
+
+
     // Iterators
     constexpr T* begin() noexcept;
     constexpr const T* begin() const noexcept;
@@ -73,9 +78,6 @@ public:
     // Modifiers
     void fill(const T& val);
     void swap(array<T, N>& other) noexcept(is_nothrow_swappable<T>::value);
-
-private:
-    T arr[N];
 };
 
 
