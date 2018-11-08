@@ -4,6 +4,7 @@
 #include "algorithm.hpp"
 #include "iterator.hpp"     // hsl::begin, hsl::end defined here
 #include "stdexcept.hpp"
+#include "type_traits.hpp"
 #include "utility.hpp"
 
 namespace hsl
@@ -27,23 +28,23 @@ public:
 
 
     // Iterators
-    T* begin() noexcept;
-    const T* begin() const noexcept;
+    constexpr T* begin() noexcept;
+    constexpr const T* begin() const noexcept;
 
-    T* end() noexcept;
-    const T* end() const noexcept;
+    constexpr T* end() noexcept;
+    constexpr const T* end() const noexcept;
 
-    const T* cbegin() const noexcept;
-    const T* cend() const noexcept;
+    constexpr const T* cbegin() const noexcept;
+    constexpr const T* cend() const noexcept;
 
-    hsl::reverse_iterator<T*> rbegin() noexcept;
-    hsl::reverse_iterator<const T*> rbegin() const noexcept;
+    constexpr hsl::reverse_iterator<T*> rbegin() noexcept;
+    constexpr hsl::reverse_iterator<const T*> rbegin() const noexcept;
 
-    hsl::reverse_iterator<T*> rend() noexcept;
-    hsl::reverse_iterator<const T*> rend() const noexcept;
+    constexpr hsl::reverse_iterator<T*> rend() noexcept;
+    constexpr hsl::reverse_iterator<const T*> rend() const noexcept;
 
-    hsl::reverse_iterator<const T*> crbegin() const noexcept;
-    hsl::reverse_iterator<const T*> crend() const noexcept;
+    constexpr hsl::reverse_iterator<const T*> crbegin() const noexcept;
+    constexpr hsl::reverse_iterator<const T*> crend() const noexcept;
 
 
     // Capacity
@@ -53,25 +54,25 @@ public:
 
 
     // Element access
-    T& operator[] (size_t n);
-    const T& operator[] (size_t n) const;
+    constexpr T& operator[] (size_t n);
+    constexpr const T& operator[] (size_t n) const;
 
-    T& at(size_t n);
-    const T& at(size_t n) const;
+    constexpr T& at(size_t n);
+    constexpr const T& at(size_t n) const;
 
-    T& front();
-    const T& front() const;
+    constexpr T& front();
+    constexpr const T& front() const;
 
-    T& back();
-    const T& back() const;
+    constexpr T& back();
+    constexpr const T& back() const;
 
-    T* data() noexcept;
-    const T* data() const noexcept;
+    constexpr T* data() noexcept;
+    constexpr const T* data() const noexcept;
 
 
     // Modifiers
     void fill(const T& val);
-    void swap(array<T, N>& other);
+    void swap(array<T, N>& other) noexcept(is_nothrow_swappable<T>::value);
 
 private:
     T arr[N];
@@ -118,40 +119,52 @@ constexpr const T& get(const array<T, N>& arr) noexcept;
 // Iterators
 
 template<typename T, size_t N>
-T* array<T, N>::begin() noexcept { return arr; }
+constexpr T* array<T, N>::begin() noexcept { return arr; }
 
 template<typename T, size_t N>
-const T* array<T, N>::begin() const noexcept { return arr; }
+constexpr const T* array<T, N>::begin() const noexcept { return arr; }
 
 template<typename T, size_t N>
-T* array<T, N>::end() noexcept { return arr+N; }
+constexpr T* array<T, N>::end() noexcept { return arr+N; }
 
 template<typename T, size_t N>
-const T* array<T, N>::end() const noexcept { return arr+N; }
+constexpr const T* array<T, N>::end() const noexcept { return arr+N; }
 
 template<typename T, size_t N>
-const T* array<T, N>::cbegin() const noexcept { return arr; }
+constexpr const T* array<T, N>::cbegin() const noexcept { return arr; }
 
 template<typename T, size_t N>
-const T* array<T, N>::cend() const noexcept { return arr+N; }
+constexpr const T* array<T, N>::cend() const noexcept { return arr+N; }
 
 template<typename T, size_t N>
-reverse_iterator<T*> array<T, N>::rbegin() noexcept { return hsl::reverse_iterator<T*>(end()); }
+constexpr reverse_iterator<T*> array<T, N>::rbegin() noexcept { return hsl::reverse_iterator<T*>(end()); }
 
 template<typename T, size_t N>
-reverse_iterator<const T*> array<T, N>::rbegin() const noexcept { return hsl::reverse_iterator<const T*>(end()); }
+constexpr reverse_iterator<const T*> array<T, N>::rbegin() const noexcept
+{
+    return hsl::reverse_iterator<const T*>(end());
+}
 
 template<typename T, size_t N>
-reverse_iterator<T*> array<T, N>::rend() noexcept { return hsl::reverse_iterator<T*>(begin()); }
+constexpr reverse_iterator<T*> array<T, N>::rend() noexcept { return hsl::reverse_iterator<T*>(begin()); }
 
 template<typename T, size_t N>
-reverse_iterator<const T*> array<T, N>::rend() const noexcept { return hsl::reverse_iterator<const T*>(begin()); }
+constexpr reverse_iterator<const T*> array<T, N>::rend() const noexcept
+{
+    return hsl::reverse_iterator<const T*>(begin());
+}
 
 template<typename T, size_t N>
-reverse_iterator<const T*> array<T, N>::crbegin() const noexcept { return hsl::reverse_iterator<const T*>(cend()); }
+constexpr reverse_iterator<const T*> array<T, N>::crbegin() const noexcept
+{
+    return hsl::reverse_iterator<const T*>(cend());
+}
 
 template<typename T, size_t N>
-reverse_iterator<const T*> array<T, N>::crend() const noexcept { return hsl::reverse_iterator<const T*>(cbegin()); }
+constexpr reverse_iterator<const T*> array<T, N>::crend() const noexcept
+{
+    return hsl::reverse_iterator<const T*>(cbegin());
+}
 
 
 // Capacity
@@ -169,42 +182,42 @@ constexpr bool array<T, N>::empty() const noexcept { return !N; }
 // Element access
 
 template<typename T, size_t N>
-T& array<T, N>::operator[] (size_t n) { return arr[n]; }
+constexpr T& array<T, N>::operator[] (size_t n) { return arr[n]; }
 
 template<typename T, size_t N>
-const T& array<T, N>::operator[] (size_t n) const { return arr[n]; }
+constexpr const T& array<T, N>::operator[] (size_t n) const { return arr[n]; }
 
 template<typename T, size_t N>
-T& array<T, N>::at(size_t n)
+constexpr T& array<T, N>::at(size_t n)
 {
     if (n >= N) throw out_of_range("hsl::array::at");
     return arr[n];
 }
 
 template<typename T, size_t N>
-const T& array<T, N>::at(size_t n) const
+constexpr const T& array<T, N>::at(size_t n) const
 {
     if (n >= N) throw out_of_range("hsl::array::at");
     return arr[n];
 }
 
 template<typename T, size_t N>
-T& array<T, N>::front() { return arr[0]; }
+constexpr T& array<T, N>::front() { return arr[0]; }
 
 template<typename T, size_t N>
-const T& array<T, N>::front() const { return arr[0]; }
+constexpr const T& array<T, N>::front() const { return arr[0]; }
 
 template<typename T, size_t N>
-T& array<T, N>::back() { return arr[N-1]; }
+constexpr T& array<T, N>::back() { return arr[N-1]; }
 
 template<typename T, size_t N>
-const T& array<T, N>::back() const { return arr[N-1]; }
+constexpr const T& array<T, N>::back() const { return arr[N-1]; }
 
 template<typename T, size_t N>
-T* array<T, N>::data() noexcept { return arr; }
+constexpr T* array<T, N>::data() noexcept { return arr; }
 
 template<typename T, size_t N>
-const T* array<T, N>::data() const noexcept { return arr; }
+constexpr const T* array<T, N>::data() const noexcept { return arr; }
 
 
 // Modifiers
@@ -213,7 +226,7 @@ template<typename T, size_t N>
 void array<T, N>::fill (const T& val) { for (auto& x : arr) x = val; }
 
 template<typename T, size_t N>
-void array<T, N>::swap(array<T, N>& other)
+void array<T, N>::swap(array<T, N>& other) noexcept(is_nothrow_swappable<T>::value)
 {
     for (auto it1 = begin(), it2 = other.begin(); it1 != end(); ++it1, ++it2)
     {
@@ -239,28 +252,16 @@ bool operator< (const array<T, N>& lhs, const array<T, N>& rhs)
 }
 
 template<typename T, size_t N>
-bool operator!= (const array<T, N>& lhs, const array<T, N>& rhs)
-{
-    return !(lhs == rhs);
-}
+bool operator!= (const array<T, N>& lhs, const array<T, N>& rhs) { return !(lhs == rhs); }
 
 template<typename T, size_t N>
-bool operator<= (const array<T, N>& lhs, const array<T, N>& rhs)
-{
-    return !(rhs < lhs);
-}
+bool operator<= (const array<T, N>& lhs, const array<T, N>& rhs) { return !(rhs < lhs); }
 
 template<typename T, size_t N>
-bool operator> (const array<T, N>& lhs, const array<T, N>& rhs)
-{
-    return rhs < lhs;
-}
+bool operator> (const array<T, N>& lhs, const array<T, N>& rhs) { return rhs < lhs; }
 
 template<typename T, size_t N>
-bool operator>= (const array<T, N>& lhs, const array<T, N>& rhs)
-{
-    return !(lhs < rhs);
-}
+bool operator>= (const array<T, N>& lhs, const array<T, N>& rhs) { return !(lhs < rhs); }
 
 
 // Tuple interface
