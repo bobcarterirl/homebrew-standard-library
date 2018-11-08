@@ -1,31 +1,27 @@
 #include <cassert>
-#include <cstdio>
+#include <iostream>
 #include "tests.hpp"
 #include "array.hpp"
 
 void test_array()
 {
-    fprintf(stderr, "array tests\n");
+    std::cerr << "array tests\n";
 
-    fprintf(stderr, "constructors\n");
+    std::cerr << "constructors\n";
     {
         hsl::array<int, 5> arr1;
         hsl::array<int, 5> arr2{1, 2, 3, 4, 5};
         hsl::array<int, 5> arr3 = arr2;
     }
 
-    fprintf(stderr, "\tempty\n");
+    std::cerr << "\tempty, size, max_size\n";
     {
         hsl::array<int, 0> mtra;
         static_assert(mtra.empty(), "mtra is empty");
 
         hsl::array<int, 5> arr;
         static_assert(!arr.empty(), "arr isn't empty");
-    }
 
-    fprintf(stderr, "\tsize, max_size\n");
-    {
-        hsl::array<int, 5> arr;
         static_assert(arr.size() == 5, "arr has 5 elements");
         static_assert(arr.max_size() == 5, "arr can only have 5 elements");
 
@@ -34,7 +30,7 @@ void test_array()
         static_assert(big_arr.max_size() == 1024, "big_arr can only have 1024 elements");
     }
 
-    fprintf(stderr, "\toperator[]\n");
+    std::cerr << "\toperator[]\n";
     {
         hsl::array<int, 5> arr;
         arr[0] = 1;
@@ -50,7 +46,7 @@ void test_array()
         assert(carr[4] == 3);
     }
 
-    fprintf(stderr, "\tat\n");
+    std::cerr << "\tat\n";
     {
         hsl::array<int, 5> arr;
         arr.at(0) = 1;
@@ -77,11 +73,11 @@ void test_array()
         assert(throws_oor);
     }
 
-    fprintf(stderr, "\tfront, back\n");
+    std::cerr << "\tfront, back\n";
     {
         hsl::array<int, 5> arr;
-        arr.at(0) = 1;
-        arr.at(4) = 2;
+        arr.front() = 1;
+        arr.back() = 2;
         assert(arr.front() == 1);
         assert(arr.back() == 2);
 
@@ -90,7 +86,7 @@ void test_array()
         assert(carr.back() == 2);
     }
 
-    fprintf(stderr, "\tbegin, end, cbegin, cend\n");
+    std::cerr << "\tbegin, end, cbegin, cend\n";
     {
         hsl::array<int, 5> arr;
         for (auto it = arr.begin(); it != arr.end(); it++)
@@ -124,7 +120,7 @@ void test_array()
         }
     }
 
-    fprintf(stderr, "\tNon-member begin, end\n");
+    std::cerr << "\tNon-member begin, end\n";
     {
         hsl::array<int, 5> arr;
         for (auto it = hsl::begin(arr); it != hsl::end(arr); it++)
@@ -141,7 +137,7 @@ void test_array()
         }
     }
 
-    fprintf(stderr, "\trbegin, rend, crbegin, crend\n");
+    std::cerr << "\trbegin, rend, crbegin, crend\n";
     {
         hsl::array<int, 5> arr;
         for (auto it = arr.rbegin(); it != arr.rend(); it++)
@@ -175,44 +171,28 @@ void test_array()
         }
     }
 
-    fprintf(stderr, "\tfill\n");
+    std::cerr << "\tfill\n";
     {
         hsl::array<int, 5> arr;
         arr.fill(10);
 
-        for (auto i : arr)
-        {
-            assert(i == 10);
-        }
+        assert(arr == (hsl::array<int, 5>{10, 10, 10, 10, 10}));
     }
 
-    fprintf(stderr, "\tswap\n");
+    std::cerr << "\tswap\n";
     {
-        hsl::array<int, 5> arr1, arr2;
-        arr1.fill(10);
-        arr2.fill(20);
-
+        hsl::array<int, 5> arr1{1, 2, 3, 4, 5};
+        hsl::array<int, 5> arr2{6, 7, 8, 9, 0};
         arr1.swap(arr2);
-
-        for (auto i : arr1)
-        {
-            assert(i == 20);
-        }
-
-        for (auto i : arr2)
-        {
-            assert(i == 10);
-        }
+        assert(arr1 == (hsl::array<int, 5>{6, 7, 8, 9, 0}));
+        assert(arr2 == (hsl::array<int, 5>{1, 2, 3, 4, 5}));
     }
 
-    fprintf(stderr, "\trelational operators\n");
+    std::cerr << "\trelational operators\n";
     {
-        hsl::array<int, 5> arr1, arr2, arr3;
-
-        arr1.fill(0);
-        arr2.fill(0);
-        arr3.fill(0);
-        arr3[3] = 1;
+        hsl::array<int, 5> arr1{0, 0, 0, 0, 0};
+        hsl::array<int, 5> arr2{0, 0, 0, 0, 0};
+        hsl::array<int, 5> arr3{0, 0, 1, 0, 0};
 
         assert(arr1 == arr2);
         assert(!(arr1 == arr3));
@@ -239,7 +219,7 @@ void test_array()
         assert(arr3 >= arr1);
     }
 
-    fprintf(stderr, "\tget\n");
+    std::cerr << "\tget\n";
     {
         hsl::array<int, 5> arr;
         hsl::get<0>(arr) = 1;
