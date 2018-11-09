@@ -176,16 +176,27 @@ void test_array()
         hsl::array<int, 5> arr;
         arr.fill(10);
 
-        assert(arr == (hsl::array<int, 5>{10, 10, 10, 10, 10}));
+        for (int i : arr)
+        {
+            assert(i == 10);
+        }
     }
 
     std::cerr << "\tswap\n";
     {
-        hsl::array<int, 5> arr1{1, 2, 3, 4, 5};
-        hsl::array<int, 5> arr2{6, 7, 8, 9, 0};
+        hsl::array<int, 5> arr1{1, 1, 1, 1, 1};
+        hsl::array<int, 5> arr2{2, 2, 2, 2, 2};
         arr1.swap(arr2);
-        assert(arr1 == (hsl::array<int, 5>{6, 7, 8, 9, 0}));
-        assert(arr2 == (hsl::array<int, 5>{1, 2, 3, 4, 5}));
+
+        for (int i : arr1)
+        {
+            assert(i == 2);
+        }
+
+        for (int i : arr2)
+        {
+            assert(i == 1);
+        }
     }
 
     std::cerr << "\trelational operators\n";
@@ -230,7 +241,7 @@ void test_array()
     std::cerr << "\ttuple_element, tuple_size\n";
     {
         hsl::array<int, 5> arr;
-        assert((std::is_same<hsl::tuple_element<0, decltype(arr)>::type, int>::value));
-        assert(hsl::tuple_size<decltype(arr)>::value == 5);
+        static_assert((std::is_same<hsl::tuple_element<0, decltype(arr)>::type, int>::value), "arr[0] is an int");
+        static_assert(hsl::tuple_size<decltype(arr)>::value == 5, "arr has 5 elements");
     }
 }
