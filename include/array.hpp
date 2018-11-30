@@ -34,51 +34,66 @@ public:
 
 
     // Iterators
-    constexpr T* begin() noexcept;
-    constexpr const T* begin() const noexcept;
+    constexpr T* begin() noexcept { return arr; }
+    constexpr const T* begin() const noexcept { return arr; }
 
-    constexpr T* end() noexcept;
-    constexpr const T* end() const noexcept;
+    constexpr T* end() noexcept { return arr+N; }
+    constexpr const T* end() const noexcept { return arr+N; }
 
-    constexpr const T* cbegin() const noexcept;
-    constexpr const T* cend() const noexcept;
+    constexpr const T* cbegin() const noexcept { return arr; }
+    constexpr const T* cend() const noexcept { return arr+N; }
 
-    constexpr hsl::reverse_iterator<T*> rbegin() noexcept;
-    constexpr hsl::reverse_iterator<const T*> rbegin() const noexcept;
+    constexpr hsl::reverse_iterator<T*> rbegin() noexcept { return hsl::reverse_iterator<T*>(end()); }
+    constexpr hsl::reverse_iterator<const T*> rbegin() const noexcept { return hsl::reverse_iterator<const T*>(end()); }
 
-    constexpr hsl::reverse_iterator<T*> rend() noexcept;
-    constexpr hsl::reverse_iterator<const T*> rend() const noexcept;
+    constexpr hsl::reverse_iterator<T*> rend() noexcept { return hsl::reverse_iterator<T*>(begin()); }
+    constexpr hsl::reverse_iterator<const T*> rend() const noexcept { return hsl::reverse_iterator<const T*>(begin()); }
 
-    constexpr hsl::reverse_iterator<const T*> crbegin() const noexcept;
-    constexpr hsl::reverse_iterator<const T*> crend() const noexcept;
+    constexpr hsl::reverse_iterator<const T*> crbegin() const noexcept { return hsl::reverse_iterator<const T*>(end()); }
+    constexpr hsl::reverse_iterator<const T*> crend() const noexcept { return hsl::reverse_iterator<const T*>(begin()); }
 
 
     // Capacity
-    constexpr size_t size() const noexcept;
-    constexpr size_t max_size() const noexcept;
-    constexpr bool empty() const noexcept;
+    constexpr size_t size() const noexcept { return N; }
+    constexpr size_t max_size() const noexcept { return N; }
+    constexpr bool empty() const noexcept { return !N; }
 
 
     // Element access
-    constexpr T& operator[] (size_t n);
-    constexpr const T& operator[] (size_t n) const;
+    constexpr T& operator[] (size_t n) { return arr[n]; }
+    constexpr const T& operator[] (size_t n) const { return arr[n]; }
 
-    constexpr T& at(size_t n);
-    constexpr const T& at(size_t n) const;
+    constexpr T& at(size_t n)
+    {
+        if (n >= N) throw out_of_range("hsl::array::at");
+        return arr[n];
+    }
 
-    constexpr T& front();
-    constexpr const T& front() const;
+    constexpr const T& at(size_t n) const
+    {
+        if (n >= N) throw out_of_range("hsl::array::at");
+        return arr[n];
+    }
 
-    constexpr T& back();
-    constexpr const T& back() const;
+    constexpr T& front() { return arr[0]; }
+    constexpr const T& front() const { return arr[0]; }
 
-    constexpr T* data() noexcept;
-    constexpr const T* data() const noexcept;
+    constexpr T& back() { return arr[N-1]; }
+    constexpr const T& back() const { return arr[N-1]; }
+
+    constexpr T* data() noexcept { return arr; }
+    constexpr const T* data() const noexcept { return arr; }
 
 
     // Modifiers
-    void fill(const T& val);
-    void swap(array<T, N>& other) noexcept(is_nothrow_swappable<T>::value);
+    void fill(const T& val) { for (auto& x : arr) x = val; }
+    void swap(array<T, N>& other) noexcept(is_nothrow_swappable<T>::value)
+    {
+        for (auto it1 = begin(), it2 = other.begin(); it1 != end(); ++it1, ++it2)
+        {
+            hsl::swap(*it1, *it2);
+        }
+    }
 };
 
 
@@ -94,161 +109,7 @@ template<typename T, size_t N>
 struct tuple_size<array<T, N> > : public integral_constant<size_t, N> {};
 
 
-// Relational operators
-
-template<typename T, size_t N>
-bool operator== (const array<T, N>& lhs, const array<T, N>& rhs);
-
-template<typename T, size_t N>
-bool operator< (const array<T, N>& lhs, const array<T, N>& rhs);
-
-template<typename T, size_t N>
-bool operator!= (const array<T, N>& lhs, const array<T, N>& rhs);
-
-template<typename T, size_t N>
-bool operator<= (const array<T, N>& lhs, const array<T, N>& rhs);
-
-template<typename T, size_t N>
-bool operator> (const array<T, N>& lhs, const array<T, N>& rhs);
-
-template<typename T, size_t N>
-bool operator>= (const array<T, N>& lhs, const array<T, N>& rhs);
-
-
-// Tuple-style get
-
-template<size_t I, typename T, size_t N>
-constexpr T& get(array<T, N>& arr) noexcept;
-
-template<size_t I, typename T, size_t N>
-constexpr T& get(array<T, N>&& arr) noexcept;
-
-template<size_t I, typename T, size_t N>
-constexpr const T& get(const array<T, N>& arr) noexcept;
-
-
-// Template member function implementations
-
-// Iterators
-
-template<typename T, size_t N>
-constexpr T* array<T, N>::begin() noexcept { return arr; }
-
-template<typename T, size_t N>
-constexpr const T* array<T, N>::begin() const noexcept { return arr; }
-
-template<typename T, size_t N>
-constexpr T* array<T, N>::end() noexcept { return arr+N; }
-
-template<typename T, size_t N>
-constexpr const T* array<T, N>::end() const noexcept { return arr+N; }
-
-template<typename T, size_t N>
-constexpr const T* array<T, N>::cbegin() const noexcept { return arr; }
-
-template<typename T, size_t N>
-constexpr const T* array<T, N>::cend() const noexcept { return arr+N; }
-
-template<typename T, size_t N>
-constexpr reverse_iterator<T*> array<T, N>::rbegin() noexcept { return hsl::reverse_iterator<T*>(end()); }
-
-template<typename T, size_t N>
-constexpr reverse_iterator<const T*> array<T, N>::rbegin() const noexcept
-{
-    return hsl::reverse_iterator<const T*>(end());
-}
-
-template<typename T, size_t N>
-constexpr reverse_iterator<T*> array<T, N>::rend() noexcept { return hsl::reverse_iterator<T*>(begin()); }
-
-template<typename T, size_t N>
-constexpr reverse_iterator<const T*> array<T, N>::rend() const noexcept
-{
-    return hsl::reverse_iterator<const T*>(begin());
-}
-
-template<typename T, size_t N>
-constexpr reverse_iterator<const T*> array<T, N>::crbegin() const noexcept
-{
-    return hsl::reverse_iterator<const T*>(cend());
-}
-
-template<typename T, size_t N>
-constexpr reverse_iterator<const T*> array<T, N>::crend() const noexcept
-{
-    return hsl::reverse_iterator<const T*>(cbegin());
-}
-
-
-// Capacity
-
-template<typename T, size_t N>
-constexpr size_t array<T, N>::size() const noexcept { return N; }
-
-template<typename T, size_t N>
-constexpr size_t array<T, N>::max_size() const noexcept { return N; }
-
-template<typename T, size_t N>
-constexpr bool array<T, N>::empty() const noexcept { return !N; }
-
-
-// Element access
-
-template<typename T, size_t N>
-constexpr T& array<T, N>::operator[] (size_t n) { return arr[n]; }
-
-template<typename T, size_t N>
-constexpr const T& array<T, N>::operator[] (size_t n) const { return arr[n]; }
-
-template<typename T, size_t N>
-constexpr T& array<T, N>::at(size_t n)
-{
-    if (n >= N) throw out_of_range("hsl::array::at");
-    return arr[n];
-}
-
-template<typename T, size_t N>
-constexpr const T& array<T, N>::at(size_t n) const
-{
-    if (n >= N) throw out_of_range("hsl::array::at");
-    return arr[n];
-}
-
-template<typename T, size_t N>
-constexpr T& array<T, N>::front() { return arr[0]; }
-
-template<typename T, size_t N>
-constexpr const T& array<T, N>::front() const { return arr[0]; }
-
-template<typename T, size_t N>
-constexpr T& array<T, N>::back() { return arr[N-1]; }
-
-template<typename T, size_t N>
-constexpr const T& array<T, N>::back() const { return arr[N-1]; }
-
-template<typename T, size_t N>
-constexpr T* array<T, N>::data() noexcept { return arr; }
-
-template<typename T, size_t N>
-constexpr const T* array<T, N>::data() const noexcept { return arr; }
-
-
-// Modifiers
-
-template<typename T, size_t N>
-void array<T, N>::fill (const T& val) { for (auto& x : arr) x = val; }
-
-template<typename T, size_t N>
-void array<T, N>::swap(array<T, N>& other) noexcept(is_nothrow_swappable<T>::value)
-{
-    for (auto it1 = begin(), it2 = other.begin(); it1 != end(); ++it1, ++it2)
-    {
-        hsl::swap(*it1, *it2);
-    }
-}
-
-
-// Template non-member function implementations
+// Template non-member function
 
 // Relational operators
 
