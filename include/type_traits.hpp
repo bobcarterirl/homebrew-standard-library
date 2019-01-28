@@ -5,9 +5,11 @@
 namespace hsl
 {
 
-template<typename T>
-using is_nothrow_swappable = std::is_nothrow_swappable<T>;
+/*template<typename T>
+using is_nothrow_swappable = std::is_nothrow_swappable<T>;*/
 
+using std::is_nothrow_swappable;
+using std::conditional;
 
 template<typename T, T v>
 struct integral_constant

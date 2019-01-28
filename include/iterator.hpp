@@ -36,7 +36,7 @@ struct iterator_traits<T*>
 };
 
 
-template<typename Iter>
+/*template<typename Iter>
 class reverse_iterator
 {
 public:
@@ -63,8 +63,9 @@ public:
 
 private:
     Iter it;
-};
+};*/
 
+using std::reverse_iterator;
 
 // Relational operators
 
@@ -77,7 +78,7 @@ bool operator!= (const reverse_iterator<Iter>& lhs, const reverse_iterator<Iter>
 // TODO <, <=, >, >=
 
 
-template<typename T>
+/*template<typename T>
 constexpr auto begin(T& t) -> decltype(t.begin());
 
 template<typename T>
@@ -87,14 +88,22 @@ template<typename T>
 constexpr auto end(T& t) -> decltype(t.end());
 
 template<typename T>
-constexpr auto end(const T& t) -> decltype(t.end());
+constexpr auto end(const T& t) -> decltype(t.end());*/
 
+using std::begin;
+using std::end;
+using std::cbegin;
+using std::cend;
+using std::rbegin;
+using std::rend;
+using std::crbegin;
+using std::crend;
 
 // Template member function implementations
 
 // Constructors
 
-template<typename Iter>
+/*template<typename Iter>
 reverse_iterator<Iter>::reverse_iterator() : it() {}
 
 template<typename Iter>
@@ -153,6 +162,6 @@ template<typename T>
 constexpr auto end(T& t) -> decltype(t.end()) { return t.end(); }
 
 template<typename T>
-constexpr auto end(const T& t) -> decltype(t.end()) { return t.end(); }
+constexpr auto end(const T& t) -> decltype(t.end()) { return t.end(); }*/
 
 }
