@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -g -O2 -Wall -Iinclude
+CFLAGS = -g -O2 -Wall -Iinclude -std=c++17
 
 SOURCES = $(shell find src -type f -name *.c -o -name *.cpp)
 OBJECTS = $(patsubst src/%.cpp,obj/%.o,$(SOURCES))

@@ -10,6 +10,8 @@ using is_nothrow_swappable = std::is_nothrow_swappable<T>;*/
 
 using std::is_nothrow_swappable;
 using std::conditional;
+using std::conditional_t;
+using std::enable_if;
 
 template<typename T, T v>
 struct integral_constant

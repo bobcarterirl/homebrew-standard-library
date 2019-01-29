@@ -16,9 +16,6 @@ void test_array()
 
     std::cerr << "\tempty, size, max_size\n";
     {
-        hsl::array<int, 0> mtra;
-        static_assert(mtra.empty(), "mtra is empty");
-
         hsl::array<int, 5> arr;
         static_assert(!arr.empty(), "arr isn't empty");
 
@@ -197,6 +194,18 @@ void test_array()
         {
             assert(i == 1);
         }
+
+        hsl::swap(arr1, arr2);
+
+        for (int i : arr1)
+        {
+            assert(i == 1);
+        }
+
+        for (int i : arr2)
+        {
+            assert(i == 2);
+        }
     }
 
     std::cerr << "\trelational operators\n";
@@ -243,5 +252,12 @@ void test_array()
         hsl::array<int, 5> arr;
         static_assert((std::is_same<hsl::tuple_element<0, decltype(arr)>::type, int>::value), "arr[0] is an int");
         static_assert(hsl::tuple_size<decltype(arr)>::value == 5, "arr has 5 elements");
+    }
+
+    std::cerr << "\tN == 0\n";
+    {
+        constexpr hsl::array<int, 0> mtra;
+        static_assert(mtra.begin() == mtra.end());
+        static_assert(mtra.empty(), "mtra is empty");
     }
 }

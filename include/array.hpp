@@ -14,6 +14,11 @@ namespace hsl
 template<typename T, size_t N>
 class array
 {
+private:
+    struct EmptyArray {};
+    using Array = hsl::conditional_t<N, T[N], EmptyArray>;
+
+
 public:
     using value_type             = T;
     using reference              = value_type&;
@@ -30,68 +35,80 @@ public:
 
     // Must be public for aggregate initialization to work.
     // Don't access it directly; use data() method, instead.
-    T arr[N];
+    Array arr;
 
 
     // Iterators
     constexpr iterator begin() noexcept
     {
-        return hsl::begin(arr);
+        if constexpr (N) return hsl::begin(arr);
+        else return iterator(nullptr);
     }
 
     constexpr const_iterator begin() const noexcept
     {
-        return hsl::begin(arr);
+        if constexpr (N) return hsl::begin(arr);
+        else return const_iterator(nullptr);
     }
 
     constexpr iterator end() noexcept
     {
-        return hsl::end(arr);
+        if constexpr (N) return hsl::end(arr);
+        else return iterator(nullptr);
     }
 
     constexpr const_iterator end() const noexcept
     {
-        return hsl::end(arr);
+        if constexpr (N) return hsl::end(arr);
+        else return iterator(nullptr);
     }
 
     constexpr const_iterator cbegin() const noexcept
     {
-        return hsl::cbegin(arr);
+        if constexpr (N) return hsl::cbegin(arr);
+        else return const_iterator(nullptr);
     }
 
     constexpr const_iterator cend() const noexcept
     {
-        return hsl::cend(arr);
+        if constexpr (N) return hsl::cend(arr);
+        else return const_iterator(nullptr);
     }
 
     constexpr reverse_iterator rbegin() noexcept
     {
-        return hsl::rbegin(arr);
+        if constexpr (N) return hsl::rbegin(arr);
+        else return reverse_iterator(nullptr);
     }
 
     constexpr const_reverse_iterator rbegin() const noexcept
     {
-        return hsl::rbegin(arr);
+        if constexpr (N) return hsl::rbegin(arr);
+        else return const_reverse_iterator(nullptr);
     }
 
     constexpr reverse_iterator rend() noexcept
     {
-        return hsl::rend(arr);
+        if constexpr (N) return hsl::rend(arr);
+        else return reverse_iterator(nullptr);
     }
 
     constexpr const_reverse_iterator rend() const noexcept
     {
-        return hsl::rend(arr);
+        if constexpr (N) return hsl::rend(arr);
+        else return const_reverse_iterator(nullptr);
     }
 
     constexpr const_reverse_iterator crbegin() const noexcept
     {
-        return hsl::crbegin(arr);
+        if constexpr (N) return hsl::crbegin(arr);
+        else return const_reverse_iterator(nullptr);
     }
 
     constexpr const_reverse_iterator crend() const noexcept
     {
-        return hsl::crend(arr);
+        if constexpr (N) return hsl::crend(arr);
+        else return const_reverse_iterator(nullptr);
     }
 
 
@@ -108,61 +125,76 @@ public:
 
     constexpr bool empty() const noexcept
     {
-        return false;
+        if constexpr (N) return false;
+        else return true;
     }
 
 
     // Element access
     constexpr T& operator[] (size_t n)
     {
-        return arr[n];
+        if constexpr (N) return arr[n];
+        else return *static_cast<T*>(nullptr);
     }
 
     constexpr const T& operator[] (size_t n) const
     {
-        return arr[n];
+        if constexpr (N) return arr[n];
+        else return *static_cast<T*>(nullptr);
     }
 
     constexpr T& at(size_t n)
     {
-        if (n >= N) throw out_of_range("hsl::array::at");
-        return arr[n];
+        if constexpr (N)
+        {
+            if (n < N) return arr[n];
+        }
+        throw out_of_range("hsl::array::at");
     }
 
     constexpr const T& at(size_t n) const
     {
-        if (n >= N) throw out_of_range("hsl::array::at");
-        return arr[n];
-    }
+        if constexpr (N)
+        {
+            if (n < N) return arr[n];
+        }
+        throw out_of_range("hsl::array::at");
+   }
 
     constexpr T& front()
     {
-        return arr[0];
+        if constexpr (N) return arr[0];
+        else return *static_cast<T*>(nullptr);
     }
 
     constexpr const T& front() const
     {
-        return arr[0];
+        if constexpr (N) return arr[0];
+        else return *static_cast<T*>(nullptr);
     }
 
     constexpr T& back()
     {
-        return arr[N - 1];
+        if constexpr (N) return arr[N - 1];
+        else return *static_cast<T*>(nullptr);
     }
 
     constexpr const T& back() const
     {
-        return arr[N - 1];
+        if constexpr (N) return arr[N - 1];
+        else return *static_cast<T*>(nullptr);
     }
 
     constexpr T* data() noexcept
     {
-        return arr;
+        if constexpr (N) return arr;
+        else return nullptr;
     }
 
     constexpr const T* data() const noexcept
     {
-        return arr;
+        if constexpr (N) return arr;
+        else return nullptr;
     }
 
 
@@ -175,10 +207,10 @@ public:
     void swap(array<T, N>& other)
     noexcept(is_nothrow_swappable<T>::value)
     {
-        hsl::swap(*this, other);
+        hsl::swap(arr, other.arr);
     }
 };
-
+ 
 
 // Tuple helper class specializations
 
@@ -242,6 +274,16 @@ constexpr const T& get(const array<T, N>& arr) noexcept
 {
     static_assert(I < N, "I must be less than N");
     return arr[I];
+}
+
+
+// Swap specialization
+
+template<typename T, size_t N>
+constexpr void swap(array<T, N>& lhs, array<T, N>& rhs)
+noexcept(noexcept(lhs.swap(rhs)))
+{
+    lhs.swap(rhs);
 }
 
 }
