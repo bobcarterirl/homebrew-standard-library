@@ -280,7 +280,7 @@ constexpr const T& get(const array<T, N>& arr) noexcept
 // Swap specialization
 
 template<typename T, size_t N>
-constexpr void swap(array<T, N>& lhs, array<T, N>& rhs)
+void swap(array<T, N>& lhs, array<T, N>& rhs)
 noexcept(noexcept(lhs.swap(rhs)))
 {
     lhs.swap(rhs);
