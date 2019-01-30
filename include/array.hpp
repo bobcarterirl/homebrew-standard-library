@@ -15,8 +15,8 @@ template<typename T, size_t N>
 class array
 {
 private:
-    struct EmptyArray {};
-    using Array = hsl::conditional_t<N, T[N], EmptyArray>;
+    struct Empty {};
+    using Array = hsl::conditional_t<N, T[N], Empty>;
 
 
 public:
@@ -134,55 +134,49 @@ public:
     constexpr T& operator[] (size_t n)
     {
         if constexpr (N) return arr[n];
-        else return *static_cast<T*>(nullptr);
+        else return *data();
     }
 
     constexpr const T& operator[] (size_t n) const
     {
         if constexpr (N) return arr[n];
-        else return *static_cast<T*>(nullptr);
+        else return *data();
     }
 
     constexpr T& at(size_t n)
     {
-        if constexpr (N)
-        {
-            if (n < N) return arr[n];
-        }
+        if constexpr (N) if (n < N) return arr[n];
         throw out_of_range("hsl::array::at");
     }
 
     constexpr const T& at(size_t n) const
     {
-        if constexpr (N)
-        {
-            if (n < N) return arr[n];
-        }
+        if constexpr (N) if (n < N) return arr[n];
         throw out_of_range("hsl::array::at");
-   }
+    }
 
     constexpr T& front()
     {
         if constexpr (N) return arr[0];
-        else return *static_cast<T*>(nullptr);
+        else return *data();
     }
 
     constexpr const T& front() const
     {
         if constexpr (N) return arr[0];
-        else return *static_cast<T*>(nullptr);
+        else return *data();
     }
 
     constexpr T& back()
     {
         if constexpr (N) return arr[N - 1];
-        else return *static_cast<T*>(nullptr);
+        else return *data();
     }
 
     constexpr const T& back() const
     {
         if constexpr (N) return arr[N - 1];
-        else return *static_cast<T*>(nullptr);
+        else return *data();
     }
 
     constexpr T* data() noexcept
