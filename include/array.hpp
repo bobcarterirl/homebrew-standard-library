@@ -14,11 +14,6 @@ namespace hsl
 template<typename T, size_t N>
 class array
 {
-private:
-    struct Empty {};
-    using Array = hsl::conditional_t<N, T[N], Empty>;
-
-
 public:
     using value_type             = T;
     using reference              = value_type&;
@@ -33,6 +28,62 @@ public:
     using difference_type        = ptrdiff_t;
 
 
+private:
+    // Simulates a zero length array, since they're non-standard
+    class Empty_array
+    {
+    public:
+        constexpr operator pointer()
+        {
+            return nullptr;
+        }
+
+
+        constexpr iterator begin() noexcept
+        {
+            return nullptr;
+        }
+
+        constexpr const_iterator begin() const noexcept
+        {
+            return nullptr;
+        }
+
+        constexpr iterator end() noexcept
+        {
+            return nullptr;
+        }
+
+        constexpr const_iterator end() const noexcept
+        {
+            return nullptr;
+        }
+
+        constexpr reverse_iterator rbegin() noexcept
+        {
+            return reverse_iterator(nullptr);
+        }
+
+        constexpr const_reverse_iterator rbegin() const noexcept
+        {
+            return const_reverse_iterator(nullptr);
+        }
+
+        constexpr reverse_iterator rend() noexcept
+        {
+            return reverse_iterator(nullptr);
+        }
+
+        constexpr const_reverse_iterator rend() const noexcept
+        {
+            return const_reverse_iterator(nullptr);
+        }
+    };
+
+    using Array = hsl::conditional_t<N, T[N], Empty_array>;
+
+
+public:
     // Must be public for aggregate initialization to work.
     // Don't access it directly; use data() method, instead.
     Array arr;
@@ -41,74 +92,62 @@ public:
     // Iterators
     constexpr iterator begin() noexcept
     {
-        if constexpr (N) return hsl::begin(arr);
-        else return iterator(nullptr);
+        return hsl::begin(arr);
     }
 
     constexpr const_iterator begin() const noexcept
     {
-        if constexpr (N) return hsl::begin(arr);
-        else return const_iterator(nullptr);
+        return hsl::begin(arr);
     }
 
     constexpr iterator end() noexcept
     {
-        if constexpr (N) return hsl::end(arr);
-        else return iterator(nullptr);
+        return hsl::end(arr);
     }
 
     constexpr const_iterator end() const noexcept
     {
-        if constexpr (N) return hsl::end(arr);
-        else return iterator(nullptr);
+        return hsl::end(arr);
     }
 
     constexpr const_iterator cbegin() const noexcept
     {
-        if constexpr (N) return hsl::cbegin(arr);
-        else return const_iterator(nullptr);
+        return hsl::cbegin(arr);
     }
 
     constexpr const_iterator cend() const noexcept
     {
-        if constexpr (N) return hsl::cend(arr);
-        else return const_iterator(nullptr);
+        return hsl::cend(arr);
     }
 
     constexpr reverse_iterator rbegin() noexcept
     {
-        if constexpr (N) return hsl::rbegin(arr);
-        else return reverse_iterator(nullptr);
+        return hsl::rbegin(arr);
     }
 
     constexpr const_reverse_iterator rbegin() const noexcept
     {
-        if constexpr (N) return hsl::rbegin(arr);
-        else return const_reverse_iterator(nullptr);
+        return hsl::rbegin(arr);
     }
 
     constexpr reverse_iterator rend() noexcept
     {
-        if constexpr (N) return hsl::rend(arr);
-        else return reverse_iterator(nullptr);
+        return hsl::rend(arr);
     }
 
     constexpr const_reverse_iterator rend() const noexcept
     {
-        if constexpr (N) return hsl::rend(arr);
-        else return const_reverse_iterator(nullptr);
+        return hsl::rend(arr);
     }
 
     constexpr const_reverse_iterator crbegin() const noexcept
     {
-        if constexpr (N) return hsl::crbegin(arr);
-        else return const_reverse_iterator(nullptr);
+        return hsl::crbegin(arr);
     }
 
     constexpr const_reverse_iterator crend() const noexcept
     {
-        if constexpr (N) return hsl::crend(arr);
-        else return const_reverse_iterator(nullptr);
+        return hsl::crend(arr);
     }
 
 
@@ -125,70 +164,61 @@ public:
 
     constexpr bool empty() const noexcept
     {
-        if constexpr (N) return false;
-        else return true;
+        return !N;
     }
 
 
     // Element access
-    constexpr T& operator[] (size_t n)
+    constexpr reference operator[] (size_t n)
     {
-        if constexpr (N) return arr[n];
-        else return *data();
+        return arr[n];
     }
 
-    constexpr const T& operator[] (size_t n) const
+    constexpr const_reference operator[] (size_t n) const
     {
-        if constexpr (N) return arr[n];
-        else return *data();
+        return arr[n];
     }
 
-    constexpr T& at(size_t n)
+    constexpr reference at(size_t n)
     {
-        if constexpr (N) if (n < N) return arr[n];
-        throw out_of_range("hsl::array::at");
+        if (n >= N) throw out_of_range("hsl::array::at");
+        return arr[n];
     }
 
-    constexpr const T& at(size_t n) const
+    constexpr const_reference at(size_t n) const
     {
-        if constexpr (N) if (n < N) return arr[n];
-        throw out_of_range("hsl::array::at");
+        if (n >= N) throw out_of_range("hsl::array::at");
+        return arr[n];
     }
 
-    constexpr T& front()
+    constexpr reference front()
     {
-        if constexpr (N) return arr[0];
-        else return *data();
+        return arr[0];
     }
 
-    constexpr const T& front() const
+    constexpr const_reference front() const
     {
-        if constexpr (N) return arr[0];
-        else return *data();
+        return arr[0];
     }
 
-    constexpr T& back()
+    constexpr reference back()
     {
-        if constexpr (N) return arr[N - 1];
-        else return *data();
+        return arr[N - 1];
     }
 
-    constexpr const T& back() const
+    constexpr const_reference back() const
     {
-        if constexpr (N) return arr[N - 1];
-        else return *data();
+        return arr[N - 1];
     }
 
-    constexpr T* data() noexcept
+    constexpr pointer data() noexcept
     {
-        if constexpr (N) return arr;
-        else return nullptr;
+        return arr;
     }
 
-    constexpr const T* data() const noexcept
+    constexpr const_pointer data() const noexcept
     {
-        if constexpr (N) return arr;
-        else return nullptr;
+        return arr;
     }
 
 
