@@ -1,3 +1,4 @@
+#include "functional.hpp"
 #include "iterator.hpp"
 #include "memory.hpp"
 #include "utility.hpp"
@@ -6,20 +7,24 @@
 namespace hsl
 {
 
-template<typename T>
+template<typename T, typename Alloc = allocator<T> >
 class vector
 {
 public:
     using value_type = T;
+    using allocator_type = Alloc;
+    using size_type = size_t;
     using reference = value_type&;
     using pointer = value_type*;
     using iterator = pointer;
-    using size_type = size_t;
 
 
     // Constructors
     vector() noexcept = default;
-    vector(size_type count) { resize(count); }
+
+    vector(size_type count, const allocator_type& alloc = allocator_type()) :
+        alloc(alloc)
+    { resize(count); }
 
 
     // Element access
@@ -41,7 +46,9 @@ public:
         {
             // We reserve the exact amount of space requested because reserve
             // is mostly used when we know (at most) how much we'll need
-            unique_ptr<value_type[]> new_arr(new value_type[new_cap]);
+            using namespace placeholders;
+            function<void(pointer)> del = bind(&vector::delete_arr, this, _1);
+            decltype(arr) new_arr(alloc.allocate(new_cap), del);
 
             swap_ranges(begin(), end(), new_arr.get());
             swap(arr, new_arr);
@@ -60,9 +67,12 @@ public:
 
 
 private:
+    allocator_type alloc;
     size_type arr_size = 0;
     size_type arr_cap = 0;
-    unique_ptr<value_type[]> arr;
+    unique_ptr<value_type[], function<void(pointer)> > arr;
+
+    void delete_arr(pointer p) { alloc.deallocate(p, arr_cap); }
 };
 
 }
