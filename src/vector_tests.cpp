@@ -12,7 +12,12 @@ void test_vector()
         hsl::vector<int> vec1;
         assert(vec1.size() == 0);
 
-        hsl::vector<int> vec2(5);
+        hsl::vector<int> vec2(5, 1);
+        assert(vec2.size() == 5);
+        assert(vec2[0] == 1);
+        assert(vec2[4] == 1);
+
+        hsl::vector<int> vec3(5);
         assert(vec2.size() == 5);
     }
 

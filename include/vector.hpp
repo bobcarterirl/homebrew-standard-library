@@ -1,3 +1,4 @@
+#include "algorithm.hpp"
 #include "functional.hpp"
 #include "iterator.hpp"
 #include "memory.hpp"
@@ -15,6 +16,7 @@ public:
     using allocator_type = Alloc;
     using size_type = size_t;
     using reference = value_type&;
+    using const_reference = const value_type&;
     using pointer = value_type*;
     using iterator = pointer;
 
@@ -22,10 +24,20 @@ public:
     // Constructors
     vector() noexcept = default;
 
-    vector(size_type count, const allocator_type& alloc = allocator_type()) :
-        alloc(alloc)
-    { resize(count); }
+    vector(size_type count,
+            const_reference value,
+            const allocator_type& alloc = allocator_type()) :
+        alloc(alloc) { assign(count, value); }
 
+    vector(size_type count, const allocator_type& alloc = allocator_type()) :
+        alloc(alloc) { resize(count); }
+
+    // Assignment
+    void assign(size_type count, const_reference value)
+    {
+        resize(count);
+        fill(begin(), end(), value);
+    }
 
     // Element access
     reference operator[] (size_type pos) { return arr[pos]; }
