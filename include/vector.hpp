@@ -76,6 +76,8 @@ public:
    size_type capacity() const noexcept { return arr_cap; }
     
     // Modifiers
+    void clear() { resize(0); }
+
     void resize(size_type count)
     {
         reserve(count);
