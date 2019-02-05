@@ -17,6 +17,11 @@ public:
     using size_type = size_t;
 
 
+    // Constructors
+    vector() noexcept = default;
+    vector(size_type count) { resize(count); }
+
+
     // Element access
     reference operator[] (size_type pos) { return arr[pos]; }
 
@@ -28,6 +33,7 @@ public:
 
     // Capacity
     size_type size() const noexcept { return arr_size; }
+    size_type capacity() const noexcept { return arr_cap; }
 
     void reserve(size_type new_cap)
     {
