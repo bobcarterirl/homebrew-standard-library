@@ -24,6 +24,9 @@ public:
     using pointer = value_type*;
     using const_pointer = const value_type*;
     using iterator = pointer;
+    using const_iterator = const_pointer;
+    using reverse_iterator = hsl::reverse_iterator<iterator>;
+    using const_reverse_iterator = hsl::reverse_iterator<const_iterator>;
 
 
     // Constructors
@@ -62,7 +65,6 @@ public:
     // Accessors
     allocator_type get_allocator() const { return alloc; }
 
-
     reference at(size_type pos)
     {
         if (pos >= size()) throw out_of_range("hsl::vector::at");
@@ -90,7 +92,24 @@ public:
 
     // Iterators
     iterator begin() noexcept { return data(); }
+    const_iterator begin() const noexcept { return data(); }
+
     iterator end() noexcept { return data() + size(); }
+    const_iterator end() const noexcept { return data() + size(); }
+
+    const_iterator cbegin() const noexcept { return begin(); }
+    const_iterator cend() const noexcept { return end(); }
+
+    reverse_iterator rbegin() noexcept { return reverse_iterator(end()); }
+    const_reverse_iterator rbegin() const noexcept
+    { return reverse_iterator(end()); }
+
+    reverse_iterator rend() noexcept { return reverse_iterator(begin()); }
+    const_reverse_iterator rend() const noexcept
+    { return reverse_iterator(begin()); }
+
+    const_reverse_iterator crbegin() const noexcept { return rbegin(); }
+    const_reverse_iterator crend() const noexcept { return rend(); }
 
 
     // Capacity
@@ -140,6 +159,7 @@ private:
 
 
 // Relational operators
+
 template<typename T, typename Alloc>
 bool operator==(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
 { return equal(lhs.begin(), lhs.end(), rhs.begin()); }
