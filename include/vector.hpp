@@ -76,9 +76,9 @@ public:
     // Capacity
     bool empty() const noexcept { return size() == 0; }
     size_type size() const noexcept { return arr_size; }
-
+    size_type capacity() const noexcept { return arr_cap; }
     size_type max_size() const noexcept
-    { return numeric_limits<size_type>::max; }
+    { return numeric_limits<size_type>::max(); }
 
     void reserve(size_type new_cap)
     {
@@ -97,7 +97,6 @@ public:
         }
     }
 
-    size_type capacity() const noexcept { return arr_cap; }
     
     // Modifiers
     void clear() { resize(0); }
