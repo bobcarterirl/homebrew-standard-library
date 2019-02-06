@@ -12,6 +12,10 @@ using std::is_nothrow_swappable;
 using std::conditional;
 using std::conditional_t;
 using std::enable_if;
+using std::enable_if_t;
+using std::is_same;
+using std::is_same_v;
+using std::is_base_of_v;
 
 template<typename T, T v>
 struct integral_constant

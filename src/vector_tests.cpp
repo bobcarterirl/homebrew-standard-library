@@ -47,6 +47,27 @@ void test_vector()
         assert(vec.capacity() == cap);
     }
 
+    std::cerr << "\tassign\n";
+    {
+        hsl::vector<int> vec1;
+        vec1.assign(5, 1);
+        assert(vec1.size() == 5);
+        assert(vec1[0] == 1);
+        assert(vec1[4] == 1);
+
+        hsl::vector<int> vec2;
+        vec2.assign(vec1.begin(), vec1.end());
+        assert(vec2.size() == vec1.size());
+        assert(vec2[0] == vec1[0]);
+        assert(vec2[4] == vec1[0]);
+
+        hsl::vector<int> vec3;
+        vec3.assign({1, 2, 3, 4, 5});
+        assert(vec3.size() == 5);
+        assert(vec3[0] == 1);
+        assert(vec3[4] == 5);
+    }
+
     std::cerr << "\toperator[]\n";
     {
         hsl::vector<int> vec(5);

@@ -1,9 +1,11 @@
 #include "algorithm.hpp"
 #include "functional.hpp"
+#include "initializer_list.hpp"
 #include "iterator.hpp"
 #include "limits.hpp"
 #include "memory.hpp"
 #include "stdexcept.hpp"
+#include "type_traits.hpp"
 #include "utility.hpp"
 
 
@@ -42,6 +44,19 @@ public:
         resize(count);
         fill(begin(), end(), value);
     }
+
+    template<typename Iter>
+    enable_if_t<is_base_of_v<
+            input_iterator_tag,
+            typename iterator_traits<Iter>::iterator_category> >
+        assign(Iter first, Iter last)
+    {
+        resize(last - first);
+        copy(first, last, begin());
+    }
+
+    void assign(initializer_list<value_type> ilist)
+    { assign(ilist.begin(), ilist.end()); }
 
 
     // Accessors

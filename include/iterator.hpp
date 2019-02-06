@@ -5,6 +5,10 @@
 namespace hsl
 {
 
+using std::input_iterator_tag;
+using std::iterator_traits;
+
+/*
 // Iterator type tags
 
 struct input_iterator_tag {};
@@ -36,7 +40,7 @@ struct iterator_traits<T*>
 };
 
 
-/*template<typename Iter>
+template<typename Iter>
 class reverse_iterator
 {
 public:

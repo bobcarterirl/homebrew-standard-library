@@ -6,6 +6,7 @@ namespace hsl
 {
 
 using std::fill;
+using std::copy;
 
 template<typename II1, typename II2>
 bool equal(II1 first1, II1 last1, II2 first2);
