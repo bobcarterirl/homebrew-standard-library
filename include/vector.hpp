@@ -30,6 +30,7 @@ public:
 
 
     // Constructors
+    
     vector() noexcept = default;
 
     vector(size_type count,
@@ -42,6 +43,7 @@ public:
 
 
     // Assignment
+
     void assign(size_type count, const_reference value)
     {
         resize(count);
@@ -63,6 +65,7 @@ public:
 
 
     // Accessors
+
     allocator_type get_allocator() const { return alloc; }
 
     reference at(size_type pos)
@@ -91,6 +94,7 @@ public:
 
 
     // Iterators
+
     iterator begin() noexcept { return data(); }
     const_iterator begin() const noexcept { return data(); }
 
@@ -113,6 +117,7 @@ public:
 
 
     // Capacity
+
     bool empty() const noexcept { return size() == 0; }
     size_type size() const noexcept { return arr_size; }
     size_type capacity() const noexcept { return arr_cap; }
@@ -120,25 +125,16 @@ public:
     size_type max_size() const noexcept
     { return numeric_limits<size_type>::max(); }
 
+    // We reserve the exact amount of space requested because reserve is mostly
+    // used when we know (at most) how much we'll need.
     void reserve(size_type new_cap)
-    {
-        if (new_cap > arr_cap)
-        {
-            // We reserve the exact amount of space requested because reserve
-            // is mostly used when we know (at most) how much we'll need
-            using namespace placeholders;
-            function<void(pointer)> del = bind(&vector::delete_arr, this, _1);
-            decltype(arr) new_arr(alloc.allocate(new_cap), del);
+    { if (new_cap > arr_cap) reallocate_arr(new_cap); }
 
-            swap_ranges(begin(), end(), new_arr.get());
-            swap(arr, new_arr);
-
-            arr_cap = new_cap;
-        }
-    }
+    void shrink_to_fit() { if (size < arr_cap) reallocate_arr(size); }
 
     
     // Modifiers
+
     void clear() { resize(0); }
 
     void resize(size_type count)
@@ -155,6 +151,18 @@ private:
     unique_ptr<value_type[], function<void(pointer)> > arr;
 
     void delete_arr(pointer p) { alloc.deallocate(p, arr_cap); }
+
+    void reallocate_arr(size_type new_cap)
+    {
+        using namespace placeholders;
+        function<void(pointer)> deleter = bind(&vector::delete_arr, this, _1);
+        decltype(arr) new_arr(alloc.allocate(new_cap), deleter);
+
+        swap_ranges(begin(), end(), new_arr.get());
+        swap(arr, new_arr);
+
+        arr_cap = new_cap;
+    }
 };
 
 
