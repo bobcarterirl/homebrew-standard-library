@@ -138,4 +138,34 @@ private:
     void delete_arr(pointer p) { alloc.deallocate(p, arr_cap); }
 };
 
+
+// Relational operators
+template<typename T, typename Alloc>
+bool operator==(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+{ return equal(lhs.begin(), lhs.end(), rhs.begin()); }
+
+template<typename T, typename Alloc>
+bool operator!=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+{ return !(lhs == rhs); }
+
+template<typename T, typename Alloc>
+bool operator<(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+{
+    return lexicographical_compare(
+            lhs.begin(), lhs.end(),
+            rhs.begin(), rhs.end());
+}
+
+template<typename T, typename Alloc>
+bool operator>(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+{ return rhs < lhs; }
+
+template<typename T, typename Alloc>
+bool operator<=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+{ return !(lhs > rhs); }
+
+template<typename T, typename Alloc>
+bool operator>=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+{ return !(lhs < rhs); }
+
 }
