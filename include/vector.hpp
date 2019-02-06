@@ -35,6 +35,7 @@ public:
     vector(size_type count, const allocator_type& alloc = allocator_type()) :
         alloc(alloc) { resize(count); }
 
+
     // Assignment
     void assign(size_type count, const_reference value)
     {
@@ -42,7 +43,11 @@ public:
         fill(begin(), end(), value);
     }
 
-    // Element access
+
+    // Accessors
+    allocator_type get_allocator() const { return alloc; }
+
+
     reference at(size_type pos)
     {
         if (pos >= size()) throw out_of_range("hsl::vector::at");
@@ -77,6 +82,7 @@ public:
     bool empty() const noexcept { return size() == 0; }
     size_type size() const noexcept { return arr_size; }
     size_type capacity() const noexcept { return arr_cap; }
+
     size_type max_size() const noexcept
     { return numeric_limits<size_type>::max(); }
 
