@@ -158,7 +158,7 @@ private:
         function<void(pointer)> deleter = bind(&vector::delete_arr, this, _1);
         decltype(arr) new_arr(alloc.allocate(new_cap), deleter);
 
-        swap_ranges(begin(), end(), new_arr.get());
+        move(begin(), end(), new_arr.get());
         swap(arr, new_arr);
 
         arr_cap = new_cap;
