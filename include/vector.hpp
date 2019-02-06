@@ -3,6 +3,7 @@
 #include "iterator.hpp"
 #include "limits.hpp"
 #include "memory.hpp"
+#include "stdexcept.hpp"
 #include "utility.hpp"
 
 
@@ -19,6 +20,7 @@ public:
     using reference = value_type&;
     using const_reference = const value_type&;
     using pointer = value_type*;
+    using const_pointer = const value_type*;
     using iterator = pointer;
 
 
@@ -41,12 +43,34 @@ public:
     }
 
     // Element access
-    reference operator[] (size_type pos) { return arr[pos]; }
+    reference at(size_type pos)
+    {
+        if (pos >= size()) throw out_of_range("hsl::vector::at");
+        return arr[pos];
+    }
+
+    const_reference at(size_type pos) const
+    {
+        if (pos >= size()) throw out_of_range("hsl::vector::at");
+        return arr[pos];
+    }
+    
+    reference operator[](size_type pos) { return arr[pos]; }
+    const_reference operator[](size_type pos) const { return arr[pos]; }
+
+    reference front() { return *begin(); }
+    const_reference front() const { return *begin(); }
+
+    reference back() { return *(end() - 1); }
+    const_reference back() const { return *(end() - 1); }
+
+    pointer data() noexcept { return arr.get(); }
+    const_pointer data() const noexcept { return arr.get(); }
 
 
     // Iterators
-    iterator begin() noexcept { return arr.get(); }
-    iterator end() noexcept { return arr.get() + size(); }
+    iterator begin() noexcept { return data(); }
+    iterator end() noexcept { return data() + size(); }
 
 
     // Capacity

@@ -55,4 +55,34 @@ void test_vector()
         assert(vec[0] == 1);
         assert(vec[4] == 5);
     }
+
+    std::cerr << "\tat\n";
+    {
+        hsl::vector<int> vec(5);
+        vec.at(0) = 1;
+        vec.at(4) = 5;
+        assert(vec.at(0) == 1);
+        assert(vec.at(4) == 5);
+
+        bool throws = false;
+        try { vec.at(5); }
+        catch (hsl::out_of_range& e) { throws = true; }
+        assert(throws);
+    }
+
+    std::cerr << "\tfront, back\n";
+    {
+        hsl::vector<int> vec(5);
+        vec.front() = 1;
+        vec.back() = 5;
+        assert(vec.front() == 1);
+        assert(vec.back() == 5);
+    }
+
+    std::cerr << "\tdata\n";
+    {
+        hsl::vector<int> vec(5);
+        vec[0] = 1;
+        assert(*vec.data() == 1);
+    }
 }
