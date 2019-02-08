@@ -38,6 +38,21 @@ public:
     vector(size_type count)
     { resize(count); }
 
+    template<typename Iter>
+    enable_if_t<is_base_of_v<
+            input_iterator_tag,
+            typename iterator_traits<Iter>::iterator_category> >
+    vector(Iter first, Iter last)
+    { assign(first, last); }
+
+    vector(const vector& other)
+    { assign(other.begin(), other.end()); }
+
+    vector(vector&& other) noexcept = default;
+
+    vector(initializer_list<value_type> ilist)
+    { assign(ilist.begin(), ilist.end()); }
+
 
     // Assignment
 
