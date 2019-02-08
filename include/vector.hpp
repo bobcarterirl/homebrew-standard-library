@@ -151,7 +151,11 @@ public:
     }
 
     template<typename Iter>
-    iterator insert(const_iterator pos, Iter first, Iter last)
+    enable_if_t<is_base_of_v<
+            input_iterator_tag,
+            typename iterator_traits<Iter>::iterator_category>,
+            iterator>
+        insert(const_iterator pos, Iter first, Iter last)
     {
         iterator dest = make_room(pos, distance(first, last));
         uninitialized_copy(first, last, dest);
