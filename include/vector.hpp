@@ -175,6 +175,17 @@ public:
     }
 
 
+    iterator erase(const_iterator pos) { erase(pos, pos + 1); }
+
+    iterator erase(const_iterator first, const_iterator last)
+    {
+        iterator dest = begin() + distance(begin(), first);
+        move_backward(last, end(), dest);
+        resize(size() - distance(first, last));
+        return dest;
+    }
+
+
     void resize(size_type count) { resize(count, value_type()); }
 
     void resize(size_type count, const_reference value)
