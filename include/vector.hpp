@@ -43,8 +43,8 @@ public:
 
     void assign(size_type count, const_reference value)
     {
-        resize(count);
         fill(begin(), end(), value);
+        resize(count, value);
     }
 
     template<typename Iter>
