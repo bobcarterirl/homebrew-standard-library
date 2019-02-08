@@ -153,13 +153,22 @@ public:
     template<typename Iter>
     iterator insert(const_iterator pos, Iter first, Iter last)
     {
-        iterator dest = make_room(pos, count);
+        iterator dest = make_room(pos, distance(first, last));
         uninitialized_copy(first, last, dest);
         return dest;
     }
 
     iterator insert(const_iterator pos, initializer_list<value_type> ilist)
     { return insert(pos, ilist.begin(), ilist.end()); } 
+
+
+    template<typename... Args>
+    iterator emplace(const_iterator pos, Args&&... args)
+    {
+        iterator dest = make_room(pos, 1);
+        new(dest) value_type(forward<Args>(args)...);
+        return dest;
+    }
 
 
     void resize(size_type count) { resize(count, value_type()); }
@@ -189,7 +198,7 @@ private:
         --new_size;
         for (size_t i = 0; i < 8 * sizeof(size_type); i *= 2)
         {
-            n |= n >> i;
+            new_size |= new_size >> i;
         }
 
         return new_size + 1;

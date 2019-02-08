@@ -5,6 +5,8 @@
 namespace hsl
 {
 
+using std::forward;
+using std::move;
 using std::swap;
 using std::swap_ranges;
 
