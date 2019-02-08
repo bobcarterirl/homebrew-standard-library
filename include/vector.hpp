@@ -133,13 +133,34 @@ public:
     void clear() { resize(0); }
 
 
+    iterator insert(iterator pos, const_reference value)
+    { return insert(pos, 1, value); }
+
+    iterator insert(iterator pos, value_type&& value)
+    {
+        iterator dest = make_room(pos, 1);
+        *dest = move(value);
+        return dest;
+    }
+
     iterator insert(const_iterator pos, size_type count, const_reference value)
     {
         iterator dest = make_room(pos, count);
         uninitialized_fill_n(dest, count, value);
-
         return dest;
     }
+
+    template<typename Iter>
+    iterator insert(const_iterator pos, Iter first, Iter last)
+    {
+        iterator dest = make_room(pos, count);
+        uninitialized_copy(first, last, dest);
+        return dest;
+    }
+
+    iterator insert(const_iterator pos, initializer_list<value_type> ilist)
+    { return insert(pos, ilist.begin(), ilist.end()); } 
+
 
     void resize(size_type count) { resize(count, value_type()); }
 
