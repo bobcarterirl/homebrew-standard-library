@@ -12,12 +12,11 @@
 namespace hsl
 {
 
-template<typename T, typename Alloc = allocator<T> >
+template<typename T>
 class vector
 {
 public:
     using value_type = T;
-    using allocator_type = Alloc;
     using size_type = size_t;
     using reference = value_type&;
     using const_reference = const value_type&;
@@ -33,13 +32,11 @@ public:
     
     vector() noexcept = default;
 
-    vector(size_type count,
-            const_reference value,
-            const allocator_type& alloc = allocator_type()) :
-        alloc(alloc) { assign(count, value); }
+    vector(size_type count, const_reference value)
+    { assign(count, value); }
 
-    vector(size_type count, const allocator_type& alloc = allocator_type()) :
-        alloc(alloc) { resize(count); }
+    vector(size_type count)
+    { resize(count); }
 
 
     // Assignment
@@ -65,8 +62,6 @@ public:
 
 
     // Accessors
-
-    allocator_type get_allocator() const { return alloc; }
 
     reference at(size_type pos)
     {
@@ -137,63 +132,113 @@ public:
 
     void clear() { resize(0); }
 
-    void resize(size_type count)
+
+    iterator insert(const_iterator pos, size_type count, const_reference value)
     {
-        reserve(count);
+        iterator dest = make_room(pos, count);
+        uninitialized_fill_n(dest, count, value);
+
+        return dest;
+    }
+
+    void resize(size_type count) { resize(count, value_type()); }
+
+    void resize(size_type count, const_reference value)
+    {
+        if (count > size())
+        {
+            reserve(count);
+            uninitialized_fill(end(), begin() + count, value);
+        }
+
         arr_size = count;
     }
 
 
 private:
-    allocator_type alloc;
     size_type arr_size = 0;
     size_type arr_cap = 0;
-    unique_ptr<value_type[], function<void(pointer)> > arr;
+    unique_ptr<value_type[]> arr;
 
-    void delete_arr(pointer p) { alloc.deallocate(p, arr_cap); }
+
+    // Returns capacity of array after insert or push
+    // i.e. smallest power of 2 > new size
+    size_type next_cap(size_type new_size)
+    {
+        --new_size;
+        for (size_t i = 0; i < 8 * sizeof(size_type); i *= 2)
+        {
+            n |= n >> i;
+        }
+
+        return new_size + 1;
+    }
+
 
     void reallocate_arr(size_type new_cap)
     {
-        using namespace placeholders;
-        function<void(pointer)> deleter = bind(&vector::delete_arr, this, _1);
-        decltype(arr) new_arr(alloc.allocate(new_cap), deleter);
-
+        unique_ptr<value_type[]> new_arr(new value_type[new_cap]);
         move(begin(), end(), new_arr.get());
-        swap(arr, new_arr);
 
+        swap(arr, new_arr);
         arr_cap = new_cap;
+    }
+
+
+    void make_room(const_iterator pos, size_type count)
+    {
+        size_type new_size = size() + count;
+        size_type pos_idx = distance(begin() + pos);
+
+        if (new_size > capacity())
+        {
+            size_type new_cap = next_cap(new_size);
+
+            unique_ptr<value_type[]> new_arr(new value_type[new_cap]);
+            move(begin(), pos, new_arr.get());
+            move(pos, end(), new_arr.get() + pos_idx + count);
+
+            swap(arr, new_arr);
+            arr_cap = new_cap;
+        }
+        else
+        {
+            move_backward(pos, end(), begin() + pos_idx + count);
+        }
+
+        arr_size = new_size;
     }
 };
 
 
 // Relational operators
 
-template<typename T, typename Alloc>
-bool operator==(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+template<typename T>
+bool operator==(const vector<T>& lhs, const vector<T>& rhs)
 { return equal(lhs.begin(), lhs.end(), rhs.begin()); }
 
-template<typename T, typename Alloc>
-bool operator!=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+template<typename T>
+bool operator!=(const vector<T>& lhs, const vector<T>& rhs)
 { return !(lhs == rhs); }
 
-template<typename T, typename Alloc>
-bool operator<(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+template<typename T>
+bool operator<(const vector<T>& lhs, const vector<T>& rhs)
 {
     return lexicographical_compare(
             lhs.begin(), lhs.end(),
             rhs.begin(), rhs.end());
 }
 
-template<typename T, typename Alloc>
-bool operator>(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+template<typename T>
+bool operator>(const vector<T>& lhs, const vector<T>& rhs)
 { return rhs < lhs; }
 
-template<typename T, typename Alloc>
-bool operator<=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+template<typename T>
+bool operator<=(const vector<T>& lhs, const vector<T>& rhs)
 { return !(lhs > rhs); }
 
-template<typename T, typename Alloc>
-bool operator>=(const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs)
+template<typename T>
+bool operator>=(const vector<T>& lhs, const vector<T>& rhs)
 { return !(lhs < rhs); }
 
 }
