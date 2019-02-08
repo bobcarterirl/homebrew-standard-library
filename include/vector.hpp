@@ -193,6 +193,8 @@ public:
     reference emplace_back(Args&&... args)
     { return *emplace(end(), forward(args)...); }
 
+    void pop_back() { resize(arr_size - 1); }
+
 
     void resize(size_type count) { resize(count, value_type()); }
 
@@ -205,6 +207,14 @@ public:
         }
 
         arr_size = count;
+    }
+
+
+    void swap(vector& other)
+    {
+        hsl::swap(arr_size, other.arr_size);
+        hsl::swap(arr_cap, other.arr_cap);
+        hsl::swap(arr, other.arr);
     }
 
 
@@ -233,7 +243,7 @@ private:
         unique_ptr<value_type[]> new_arr(new value_type[new_cap]);
         move(begin(), end(), new_arr.get());
 
-        swap(arr, new_arr);
+        hsl::swap(arr, new_arr);
         arr_cap = new_cap;
     }
 
@@ -251,7 +261,7 @@ private:
             move(begin(), pos, new_arr.get());
             move(pos, end(), new_arr.get() + pos_idx + count);
 
-            swap(arr, new_arr);
+            hsl::swap(arr, new_arr);
             arr_cap = new_cap;
         }
         else
