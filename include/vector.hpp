@@ -186,6 +186,14 @@ public:
     }
 
 
+    void push_back(const_reference value) { insert(end(), value); }
+    void push_back(value_type&& value) { insert(end(), forward(value)); }
+
+    template<typename... Args>
+    reference emplace_back(Args&&... args)
+    { return *emplace(end(), forward(args)...); }
+
+
     void resize(size_type count) { resize(count, value_type()); }
 
     void resize(size_type count, const_reference value)
