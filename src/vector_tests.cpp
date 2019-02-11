@@ -14,11 +14,27 @@ void test_vector()
 
         hsl::vector<int> vec2(5, 1);
         assert(vec2.size() == 5);
-        assert(vec2[0] == 1);
-        assert(vec2[4] == 1);
+        for (int i : vec2) assert(i == 1);
 
         hsl::vector<int> vec3(5);
-        assert(vec2.size() == 5);
+        assert(vec3.size() == 5);
+
+        hsl::vector<int> vec4(vec2.begin(), vec2.begin() + 3);
+        assert(vec4.size() == 3);
+        for (int i : vec4) assert(i == 1);
+
+        hsl::vector<int> vec5(vec2);
+        assert(vec5.size() == 5);
+        for (int i : vec5) assert(i == 1);
+
+        hsl::vector<int> vec6(hsl::move(vec2));
+        assert(vec6.size() == 5);
+        for (int i : vec6) assert(i == 1);
+        assert(vec2.empty());
+
+        hsl::vector<int> vec7{1, 2, 3, 4, 5};
+        assert(vec7.size() == 5);
+        for (int i = 0; i < 5; ++i) assert(vec7[i] == i + 1);
     }
 
     std::cerr << "\treserve\n";
@@ -52,20 +68,31 @@ void test_vector()
         hsl::vector<int> vec1;
         vec1.assign(5, 1);
         assert(vec1.size() == 5);
-        assert(vec1[0] == 1);
-        assert(vec1[4] == 1);
+        for (int i : vec1) assert(i == 1);
 
         hsl::vector<int> vec2;
         vec2.assign(vec1.begin(), vec1.end());
         assert(vec2.size() == vec1.size());
-        assert(vec2[0] == vec1[0]);
-        assert(vec2[4] == vec1[0]);
+        assert(vec2 == vec1);
 
         hsl::vector<int> vec3;
         vec3.assign({1, 2, 3, 4, 5});
         assert(vec3.size() == 5);
-        assert(vec3[0] == 1);
-        assert(vec3[4] == 5);
+        for (int i = 0; i < 5; ++i) assert(vec3[i] == i + 1);
+
+        hsl::vector<int> vec4;
+        vec4 = vec1;
+        assert(vec4.size() == vec1.size());
+        assert(vec4 == vec1);
+
+        hsl::vector<int> vec5;
+        vec5 = hsl::move(vec1);
+        assert(vec5.size() == 5);
+        for (int i : vec5) assert(i == 1);
+
+        hsl::vector<int> vec6;
+        vec6 = {1, 2, 3, 4, 5};
+        for (int i = 0; i < 5; ++i) assert(vec6[i] == i + 1);
     }
 
     std::cerr << "\toperator[]\n";

@@ -32,23 +32,19 @@ public:
     
     vector() noexcept = default;
 
-    vector(size_type count, const_reference value)
-    { assign(count, value); }
+    vector(size_type count, const_reference value) { assign(count, value); }
 
-    explicit vector(size_type count)
-    { resize(count); }
+    explicit vector(size_type count) { resize(count); }
 
     template<typename Iter,
             typename = enable_if_t<is_base_of_v<
                 input_iterator_tag,
                 typename iterator_traits<Iter>::iterator_category> > >
-    vector(Iter first, Iter last)
-    { assign(first, last); }
+    vector(Iter first, Iter last) { assign(first, last); }
 
-    vector(const vector& other)
-    { assign(other.begin(), other.end()); }
+    vector(const vector& other) { assign(other.begin(), other.end()); }
 
-    vector(vector&& other) noexcept = default;
+    vector(vector&& other) noexcept : vector() { swap(other); }
 
     vector(initializer_list<value_type> ilist)
     { assign(ilist.begin(), ilist.end()); }
@@ -74,6 +70,25 @@ public:
 
     void assign(initializer_list<value_type> ilist)
     { assign(ilist.begin(), ilist.end()); }
+
+
+    vector& operator=(const vector& other)
+    {
+        assign(other.begin(), other.end());
+        return *this;
+    }
+
+    vector& operator=(vector&& other)
+    {
+        arr_size = other.arr_size;
+        arr_cap = other.arr_cap;
+        arr = move(other.arr);
+
+        other.arr_size = 0;
+        other.arr_cap = 0;
+
+        return *this;
+    }
 
 
     // Accessors
