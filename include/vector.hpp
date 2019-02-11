@@ -35,13 +35,13 @@ public:
     vector(size_type count, const_reference value)
     { assign(count, value); }
 
-    vector(size_type count)
+    explicit vector(size_type count)
     { resize(count); }
 
-    template<typename Iter>
-    enable_if_t<is_base_of_v<
-            input_iterator_tag,
-            typename iterator_traits<Iter>::iterator_category> >
+    template<typename Iter,
+            typename = enable_if_t<is_base_of_v<
+                input_iterator_tag,
+                typename iterator_traits<Iter>::iterator_category> > >
     vector(Iter first, Iter last)
     { assign(first, last); }
 
@@ -318,5 +318,24 @@ bool operator<=(const vector<T>& lhs, const vector<T>& rhs)
 template<typename T>
 bool operator>=(const vector<T>& lhs, const vector<T>& rhs)
 { return !(lhs < rhs); }
+
+
+// Swap specialization
+
+template<typename T>
+void swap(vector<T>& lhs, vector<T>& rhs)
+    noexcept(noexcept(lhs.swap(rhs)))
+{ lhs.swap(rhs); }
+
+
+// Erase
+
+template<typename T, typename U>
+void erase(vector<T>& vec, const U& value)
+{ vec.erase(remove(vec.begin(), vec.end(), value), vec.end()); }
+
+template<typename T, typename Pred>
+void erase_if(vector<T>& vec, Pred pred)
+{ vec.erase(remove_if(vec.begin(), vec.end(), pred), vec.end()); }
 
 }
