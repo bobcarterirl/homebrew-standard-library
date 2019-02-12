@@ -30,32 +30,59 @@ public:
 
     // Constructors
     
-    vector() noexcept = default;
+    vector() noexcept :
+        arr_size(0),
+        arr_cap(0)
+    {}
 
-    vector(size_type count, const_reference value) { assign(count, value); }
+    vector(size_type count, const_reference value) :
+        arr_size(count),
+        arr_cap(count),
+        arr(new value_type[count])
+    { uninitialized_fill_n(begin(), count, value); }
 
-    explicit vector(size_type count) { resize(count); }
+    explicit vector(size_type count) :
+        arr_size(count),
+        arr_cap(count),
+        arr(new value_type[count])
+    { uninitialized_value_construct(begin(), end()); }
 
     template<typename Iter,
             typename = enable_if_t<is_base_of_v<
                 input_iterator_tag,
                 typename iterator_traits<Iter>::iterator_category> > >
-    vector(Iter first, Iter last) { assign(first, last); }
+    vector(Iter first, Iter last) :
+        arr_size(distance(first, last)),
+        arr_cap(distance(first, last)),
+        arr(new value_type[distance(first, last)])
+    { uninitialized_copy(first, last, begin()); }
 
-    vector(const vector& other) { assign(other.begin(), other.end()); }
+    vector(const vector& other) :
+        vector(other.begin(), other.end())
+    {}
 
-    vector(vector&& other) noexcept : vector() { swap(other); }
+    vector(vector&& other) noexcept :
+        arr_size(other.arr_size),
+        arr_cap(other.arr_cap),
+        arr(move(other.arr))
+    {
+        other.arr_size = 0;
+        other.arr_cap = 0;
+    }
 
-    vector(initializer_list<value_type> ilist)
-    { assign(ilist.begin(), ilist.end()); }
+    vector(initializer_list<value_type> ilist) :
+        vector(ilist.begin(), ilist.end())
+    {}
 
 
     // Assignment
 
     void assign(size_type count, const_reference value)
     {
-        fill(begin(), end(), value);
-        resize(count, value);
+        arr_size = count;
+        arr_cap = count;
+        arr.reset(new value_type[count]);
+        uninitialized_fill_n(begin(), count, value);
     }
 
     template<typename Iter>
@@ -64,8 +91,11 @@ public:
             typename iterator_traits<Iter>::iterator_category> >
         assign(Iter first, Iter last)
     {
-        resize(last - first);
-        copy(first, last, begin());
+        size_type dist = distance(first, last);
+        arr_size = dist;
+        arr_cap = dist;
+        arr.reset(new value_type[dist]);
+        uninitialized_copy(first, last, begin());
     }
 
     void assign(initializer_list<value_type> ilist)
@@ -108,11 +138,11 @@ public:
     reference operator[](size_type pos) { return arr[pos]; }
     const_reference operator[](size_type pos) const { return arr[pos]; }
 
-    reference front() { return *begin(); }
-    const_reference front() const { return *begin(); }
+    reference front() { return arr[0]; }
+    const_reference front() const { return arr[0]; }
 
-    reference back() { return *(end() - 1); }
-    const_reference back() const { return *(end() - 1); }
+    reference back() { return arr[size() - 1]; }
+    const_reference back() const { return arr[size() - 1]; }
 
     pointer data() noexcept { return arr.get(); }
     const_pointer data() const noexcept { return arr.get(); }
@@ -131,11 +161,11 @@ public:
 
     reverse_iterator rbegin() noexcept { return reverse_iterator(end()); }
     const_reverse_iterator rbegin() const noexcept
-    { return reverse_iterator(end()); }
+    { return const_reverse_iterator(end()); }
 
     reverse_iterator rend() noexcept { return reverse_iterator(begin()); }
     const_reverse_iterator rend() const noexcept
-    { return reverse_iterator(begin()); }
+    { return const_reverse_iterator(begin()); }
 
     const_reverse_iterator crbegin() const noexcept { return rbegin(); }
     const_reverse_iterator crend() const noexcept { return rend(); }
@@ -150,12 +180,10 @@ public:
     size_type max_size() const noexcept
     { return numeric_limits<size_type>::max(); }
 
-    // We reserve the exact amount of space requested because reserve is mostly
-    // used when we know (at most) how much we'll need.
     void reserve(size_type new_cap)
-    { if (new_cap > arr_cap) reallocate_arr(new_cap); }
+    { if (new_cap > capacity()) reallocate_arr(new_cap); }
 
-    void shrink_to_fit() { if (size < arr_cap) reallocate_arr(size); }
+    void shrink_to_fit() { if (size() < capacity()) reallocate_arr(size()); }
 
     
     // Modifiers
@@ -163,10 +191,10 @@ public:
     void clear() { resize(0); }
 
 
-    iterator insert(iterator pos, const_reference value)
+    iterator insert(const_iterator pos, const_reference value)
     { return insert(pos, 1, value); }
 
-    iterator insert(iterator pos, value_type&& value)
+    iterator insert(const_iterator pos, value_type&& value)
     {
         iterator dest = make_room(pos, 1);
         *dest = move(value);
@@ -226,7 +254,16 @@ public:
     void pop_back() { resize(arr_size - 1); }
 
 
-    void resize(size_type count) { resize(count, value_type()); }
+    void resize(size_type count)
+    {
+        if (count > size())
+        {
+            reserve(count);
+            uninitialized_value_construct(end(), begin() + count);
+        }
+
+        arr_size = count;
+    }
 
     void resize(size_type count, const_reference value)
     {
@@ -259,7 +296,7 @@ private:
     size_type next_cap(size_type new_size)
     {
         --new_size;
-        for (size_t i = 0; i < 8 * sizeof(size_type); i *= 2)
+        for (size_t i = 1; i < 8 * sizeof(size_type); i *= 2)
         {
             new_size |= new_size >> i;
         }
@@ -268,6 +305,7 @@ private:
     }
 
 
+    // Reallocates underlying array w/ new capacity
     void reallocate_arr(size_type new_cap)
     {
         unique_ptr<value_type[]> new_arr(new value_type[new_cap]);
@@ -278,28 +316,32 @@ private:
     }
 
 
-    void make_room(const_iterator pos, size_type count)
+    // Makes room for insert or push by moving elements to the right and
+    // reallocating, if necessary
+    iterator make_room(const_iterator pos, size_type count)
     {
         size_type new_size = size() + count;
-        size_type pos_idx = distance(begin() + pos);
+        size_type pos_idx = distance(cbegin(), pos);
 
         if (new_size > capacity())
         {
             size_type new_cap = next_cap(new_size);
 
             unique_ptr<value_type[]> new_arr(new value_type[new_cap]);
-            move(begin(), pos, new_arr.get());
-            move(pos, end(), new_arr.get() + pos_idx + count);
+            move(cbegin(), pos, new_arr.get());
+            move(pos, cend(), new_arr.get() + pos_idx + count);
 
             hsl::swap(arr, new_arr);
             arr_cap = new_cap;
         }
         else
         {
-            move_backward(pos, end(), begin() + pos_idx + count);
+            move_backward(pos, cend(), begin() + pos_idx + count);
         }
 
         arr_size = new_size;
+
+        return begin() + pos_idx;
     }
 };
 

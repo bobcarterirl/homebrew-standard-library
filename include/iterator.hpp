@@ -7,6 +7,7 @@ namespace hsl
 
 using std::input_iterator_tag;
 using std::iterator_traits;
+using std::distance;
 
 /*
 // Iterator type tags

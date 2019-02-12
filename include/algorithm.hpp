@@ -8,6 +8,7 @@ namespace hsl
 using std::fill;
 using std::copy;
 using std::move;
+using std::move_backward;
 using std::remove;
 using std::remove_if;
 
