@@ -388,15 +388,4 @@ void swap(vector<T>& lhs, vector<T>& rhs)
     noexcept(noexcept(lhs.swap(rhs)))
 { lhs.swap(rhs); }
 
-
-// Erase
-
-template<typename T, typename U>
-void erase(vector<T>& vec, const U& value)
-{ vec.erase(remove(vec.begin(), vec.end(), value), vec.end()); }
-
-template<typename T, typename Pred>
-void erase_if(vector<T>& vec, Pred pred)
-{ vec.erase(remove_if(vec.begin(), vec.end(), pred), vec.end()); }
-
 }
