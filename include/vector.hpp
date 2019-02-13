@@ -50,7 +50,7 @@ public:
         alloc(alloc),
         arr_size(count),
         arr_cap(count),
-        arr(new value_type[count])
+        arr(allocate(count))
     { uninitialized_fill_n(begin(), count, value); }
 
     explicit vector(size_type count,
@@ -58,7 +58,7 @@ public:
         alloc(alloc),
         arr_size(count),
         arr_cap(count),
-        arr(new value_type[count])
+        arr(allocate(count))
     { uninitialized_value_construct(begin(), end()); }
 
     template<typename Iter,
@@ -70,7 +70,7 @@ public:
         alloc(alloc),
         arr_size(distance(first, last)),
         arr_cap(distance(first, last)),
-        arr(new value_type[distance(first, last)])
+        arr(allocate(distance(first, last)))
     { uninitialized_copy(first, last, begin()); }
 
     vector(const vector& other) :
@@ -104,7 +104,7 @@ public:
         }
         else
         {
-            arr.reset(new value_type[capacity()]);
+            arr = allocate(capacity());
             arr = move(other.begin(), other.end(), begin());
         }
     }
@@ -121,7 +121,7 @@ public:
     {
         arr_size = count;
         arr_cap = count;
-        arr.reset(new value_type[count]);
+        arr = allocate(count);
         uninitialized_fill_n(begin(), count, value);
     }
 
@@ -134,7 +134,7 @@ public:
         size_type dist = distance(first, last);
         arr_size = dist;
         arr_cap = dist;
-        arr.reset(new value_type[dist]);
+        arr = allocate(dist);
         uninitialized_copy(first, last, begin());
     }
 
@@ -327,11 +327,21 @@ public:
 
 
 private:
+    using array_type = unique_ptr<value_type[], function<void(pointer)>>;
+
     allocator_type alloc;
     size_type arr_size;
     size_type arr_cap;
-    unique_ptr<value_type[]> arr;
+    array_type arr;
 
+    array_type allocate(size_type cap)
+    {
+        using namespace placeholders;
+        function<void(pointer)> del = bind(&vector::deallocate, this, _1);
+        return array_type(AT::allocate(alloc, cap), del);
+    }
+
+    void deallocate(pointer p) { AT::deallocate(alloc, p, capacity()); }
 
     // Returns capacity of array after insert or push
     // i.e. smallest power of 2 > new size
@@ -350,7 +360,7 @@ private:
     // Reallocates underlying array w/ new capacity
     void reallocate_arr(size_type new_cap)
     {
-        unique_ptr<value_type[]> new_arr(new value_type[new_cap]);
+        array_type new_arr(allocate(new_cap));
         move(begin(), end(), new_arr.get());
 
         hsl::swap(arr, new_arr);
@@ -369,7 +379,7 @@ private:
         {
             size_type new_cap = next_cap(new_size);
 
-            unique_ptr<value_type[]> new_arr(new value_type[new_cap]);
+            array_type new_arr(allocate(new_cap));
             move(cbegin(), pos, new_arr.get());
             move(pos, cend(), new_arr.get() + pos_idx + count);
 
