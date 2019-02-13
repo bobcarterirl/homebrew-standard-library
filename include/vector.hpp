@@ -34,10 +34,18 @@ public:
 
     // Constructors
     
-    vector() noexcept :
+    vector() noexcept(noexcept(allocator_type())) :
+        alloc(allocator_type()),
         arr_size(0),
         arr_cap(0)
     {}
+
+    explicit vector(const allocator_type& alloc) noexcept :
+        alloc(alloc),
+        arr_size(0),
+        arr_cap(0)
+    {}
+
 
     vector(size_type count, const_reference value) :
         arr_size(count),
@@ -54,7 +62,7 @@ public:
     template<typename Iter,
             typename = enable_if_t<is_base_of_v<
                 input_iterator_tag,
-                typename iterator_traits<Iter>::iterator_category> > >
+                typename iterator_traits<Iter>::iterator_category>>>
     vector(Iter first, Iter last) :
         arr_size(distance(first, last)),
         arr_cap(distance(first, last)),
@@ -291,8 +299,9 @@ public:
 
 
 private:
-    size_type arr_size = 0;
-    size_type arr_cap = 0;
+    allocator_type alloc;
+    size_type arr_size;
+    size_type arr_cap;
     unique_ptr<value_type[]> arr;
 
 
