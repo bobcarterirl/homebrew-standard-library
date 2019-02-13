@@ -12,16 +12,20 @@
 namespace hsl
 {
 
-template<typename T>
+template<typename T, typename Alloc = allocator<T>>
 class vector
 {
+private:
+    using AT = allocator_traits<Alloc>;
+
 public:
     using value_type = T;
+    using allocator_type = Alloc;
     using size_type = size_t;
     using reference = value_type&;
     using const_reference = const value_type&;
-    using pointer = value_type*;
-    using const_pointer = const value_type*;
+    using pointer = typename AT::pointer;
+    using const_pointer = typename AT::const_pointer;
     using iterator = pointer;
     using const_iterator = const_pointer;
     using reverse_iterator = hsl::reverse_iterator<iterator>;
