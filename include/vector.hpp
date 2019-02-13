@@ -35,9 +35,7 @@ public:
     // Constructors
     
     vector() noexcept(noexcept(allocator_type())) :
-        alloc(allocator_type()),
-        arr_size(0),
-        arr_cap(0)
+        vector(allocator_type())
     {}
 
     explicit vector(const allocator_type& alloc) noexcept :
@@ -47,13 +45,17 @@ public:
     {}
 
 
-    vector(size_type count, const_reference value) :
+    vector(size_type count, const_reference value,
+            const allocator_type& alloc = allocator_type()) :
+        alloc(alloc),
         arr_size(count),
         arr_cap(count),
         arr(new value_type[count])
     { uninitialized_fill_n(begin(), count, value); }
 
-    explicit vector(size_type count) :
+    explicit vector(size_type count,
+            const allocator_type& alloc = allocator_type()) :
+        alloc(alloc),
         arr_size(count),
         arr_cap(count),
         arr(new value_type[count])
@@ -63,7 +65,9 @@ public:
             typename = enable_if_t<is_base_of_v<
                 input_iterator_tag,
                 typename iterator_traits<Iter>::iterator_category>>>
-    vector(Iter first, Iter last) :
+    vector(Iter first, Iter last,
+            const allocator_type& alloc = allocator_type()) :
+        alloc(alloc),
         arr_size(distance(first, last)),
         arr_cap(distance(first, last)),
         arr(new value_type[distance(first, last)])
@@ -73,7 +77,12 @@ public:
         vector(other.begin(), other.end())
     {}
 
+    vector(const vector& other, const allocator_type& alloc) :
+        vector(other.begin(), other.end(), alloc)
+    {}
+
     vector(vector&& other) noexcept :
+        alloc(move(other.alloc)),
         arr_size(other.arr_size),
         arr_cap(other.arr_cap),
         arr(move(other.arr))
@@ -82,7 +91,26 @@ public:
         other.arr_cap = 0;
     }
 
-    vector(initializer_list<value_type> ilist) :
+    vector(vector&& other, const allocator_type& alloc) :
+        alloc(alloc),
+        arr_size(other.arr_size),
+        arr_cap(other.arr_cap)
+    {
+        if (alloc == other.alloc)
+        {
+            arr = move(other.arr);
+            other.arr_size = 0;
+            other.arr_cap = 0;
+        }
+        else
+        {
+            arr.reset(new value_type[capacity()]);
+            arr = move(other.begin(), other.end(), begin());
+        }
+    }
+
+    vector(initializer_list<value_type> ilist,
+            const allocator_type& alloc = allocator_type()) :
         vector(ilist.begin(), ilist.end())
     {}
 
@@ -362,8 +390,10 @@ private:
 
 // Deduction guide
 
-template<typename Iter>
-vector(Iter, Iter) -> vector<typename iterator_traits<Iter>::value_type>;
+template<typename Iter,
+        typename Alloc = allocator<typename iterator_traits<Iter>::value_type>>
+vector(Iter, Iter)
+    -> vector<typename iterator_traits<Iter>::value_type, Alloc>;
 
 
 // Relational operators
