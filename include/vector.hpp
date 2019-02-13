@@ -245,11 +245,12 @@ public:
 
 
     void push_back(const_reference value) { insert(end(), value); }
-    void push_back(value_type&& value) { insert(end(), forward(value)); }
+    void push_back(value_type&& value)
+    { insert(end(), forward<value_type&&>(value)); }
 
     template<typename... Args>
     reference emplace_back(Args&&... args)
-    { return *emplace(end(), forward(args)...); }
+    { return *emplace(end(), forward<Args>(args)...); }
 
     void pop_back() { resize(arr_size - 1); }
 
@@ -336,7 +337,7 @@ private:
         }
         else
         {
-            move_backward(pos, cend(), begin() + pos_idx + count);
+            move_backward(pos, cend(), begin() + new_size);
         }
 
         arr_size = new_size;
@@ -350,7 +351,10 @@ private:
 
 template<typename T>
 bool operator==(const vector<T>& lhs, const vector<T>& rhs)
-{ return equal(lhs.begin(), lhs.end(), rhs.begin()); }
+{
+    return lhs.size() == rhs.size()
+        && equal(lhs.begin(), lhs.end(), rhs.begin());
+}
 
 template<typename T>
 bool operator!=(const vector<T>& lhs, const vector<T>& rhs)
