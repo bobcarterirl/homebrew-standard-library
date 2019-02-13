@@ -347,6 +347,12 @@ private:
 };
 
 
+// Deduction guide
+
+template<typename Iter>
+vector(Iter, Iter) -> vector<typename iterator_traits<Iter>::value_type>;
+
+
 // Relational operators
 
 template<typename T>
