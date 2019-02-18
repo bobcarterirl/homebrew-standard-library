@@ -51,7 +51,7 @@ public:
         arr_size(count),
         arr_cap(count),
         arr(allocate(count))
-    { uninitialized_fill_n(begin(), count, value); }
+    { uninitialized_fill_n_a(begin(), count, value); }
 
     explicit vector(size_type count,
             const allocator_type& alloc = allocator_type()) :
@@ -59,7 +59,7 @@ public:
         arr_size(count),
         arr_cap(count),
         arr(allocate(count))
-    { uninitialized_value_construct(begin(), end()); }
+    { uninitialized_value_construct_a(begin(), end()); }
 
     template<typename Iter,
             typename = enable_if_t<is_base_of_v<
@@ -71,7 +71,7 @@ public:
         arr_size(distance(first, last)),
         arr_cap(distance(first, last)),
         arr(allocate(distance(first, last)))
-    { uninitialized_copy(first, last, begin()); }
+    { uninitialized_copy_a(first, last, begin()); }
 
     vector(const vector& other) :
         vector(other.begin(), other.end())
@@ -122,7 +122,7 @@ public:
         arr_size = count;
         arr_cap = count;
         arr = allocate(count);
-        uninitialized_fill_n(begin(), count, value);
+        uninitialized_fill_n_a(begin(), count, value);
     }
 
     template<typename Iter>
@@ -135,7 +135,7 @@ public:
         arr_size = dist;
         arr_cap = dist;
         arr = allocate(dist);
-        uninitialized_copy(first, last, begin());
+        uninitialized_copy_a(first, last, begin());
     }
 
     void assign(initializer_list<value_type> ilist)
@@ -244,7 +244,7 @@ public:
     iterator insert(const_iterator pos, size_type count, const_reference value)
     {
         iterator dest = make_room(pos, count);
-        uninitialized_fill_n(dest, count, value);
+        uninitialized_fill_n_a(dest, count, value);
         return dest;
     }
 
@@ -256,7 +256,7 @@ public:
         insert(const_iterator pos, Iter first, Iter last)
     {
         iterator dest = make_room(pos, distance(first, last));
-        uninitialized_copy(first, last, dest);
+        uninitialized_copy_a(first, last, dest);
         return dest;
     }
 
@@ -300,7 +300,7 @@ public:
         if (count > size())
         {
             reserve(count);
-            uninitialized_value_construct(end(), begin() + count);
+            uninitialized_value_construct_a(end(), begin() + count);
         }
 
         arr_size = count;
@@ -311,7 +311,7 @@ public:
         if (count > size())
         {
             reserve(count);
-            uninitialized_fill(end(), begin() + count, value);
+            uninitialized_fill_a(end(), begin() + count, value);
         }
 
         arr_size = count;
@@ -343,6 +343,7 @@ private:
 
     void deallocate(pointer p) { AT::deallocate(alloc, p, capacity()); }
 
+
     // Returns capacity of array after insert or push
     // i.e. smallest power of 2 > new size
     size_type next_cap(size_type new_size)
@@ -367,7 +368,6 @@ private:
         arr_cap = new_cap;
     }
 
-
     // Makes room for insert or push by moving elements to the right and
     // reallocating, if necessary
     iterator make_room(const_iterator pos, size_type count)
@@ -380,21 +380,46 @@ private:
             size_type new_cap = next_cap(new_size);
 
             array_type new_arr(allocate(new_cap));
-            move(cbegin(), pos, new_arr.get());
-            move(pos, cend(), new_arr.get() + pos_idx + count);
+            uninitialized_move_a(cbegin(), pos, new_arr.get());
+            uninitialized_move_a(pos, cend(), new_arr.get() + pos_idx + count);
 
             hsl::swap(arr, new_arr);
             arr_cap = new_cap;
         }
+        else if (count >= (size_type)distance(pos, cend()))
+        {
+            uninitialized_move_a(pos, cend(), begin() + pos_idx + count);
+        }
         else
         {
-            move_backward(pos, cend(), begin() + new_size);
+            uninitialized_move_a(cend() - count, cend(), end());
+            move_backward(pos, cend() - count, end());
         }
 
         arr_size = new_size;
 
         return begin() + pos_idx;
     }
+
+
+    void uninitialized_value_construct_a(iterator first, iterator last)
+    { uninitialized_value_construct(first, last); }
+
+    void uninitialized_fill_n_a(iterator first, size_type count,
+            const_reference value)
+    { uninitialized_fill_n(first, count, value); }
+
+    void uninitialized_copy_a(const_iterator first, const_iterator last,
+            iterator dest)
+    { uninitialized_copy(first, last, dest); }
+
+    void uninitialized_move_a(const_iterator first, const_iterator last,
+            iterator dest)
+    { uninitialized_move(first, last, dest); }
+
+    void uninitialized_move_backward_a(const_iterator first,
+            const_iterator last, iterator dest)
+    { uninitialized_move_backward(first, last, dest); }
 };
 
 
