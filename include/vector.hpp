@@ -403,23 +403,40 @@ private:
 
 
     void uninitialized_value_construct_a(iterator first, iterator last)
-    { uninitialized_value_construct(first, last); }
+    {
+        for (; first != last; ++first)
+        {
+            AT::construct(alloc, first);
+        }
+    }
 
     void uninitialized_fill_n_a(iterator first, size_type count,
             const_reference value)
-    { uninitialized_fill_n(first, count, value); }
+    {
+        iterator last = first + count;
+        for (; first != last; ++first)
+        {
+            AT::construct(alloc, first, value);
+        }
+    }
 
     void uninitialized_copy_a(const_iterator first, const_iterator last,
             iterator dest)
-    { uninitialized_copy(first, last, dest); }
+    {
+        for (; first != last; ++first, ++dest)
+        {
+            AT::construct(alloc, dest, *first);
+        }
+    }
 
     void uninitialized_move_a(const_iterator first, const_iterator last,
             iterator dest)
-    { uninitialized_move(first, last, dest); }
-
-    void uninitialized_move_backward_a(const_iterator first,
-            const_iterator last, iterator dest)
-    { uninitialized_move_backward(first, last, dest); }
+    {
+        for(; first != last; ++first, ++dest)
+        {
+            AT::construct(alloc, dest, move(*first));
+        }
+    }
 };
 
 

@@ -6,6 +6,7 @@ namespace hsl
 {
 
 using std::fill;
+using std::for_each;
 using std::copy;
 using std::move;
 using std::move_backward;
