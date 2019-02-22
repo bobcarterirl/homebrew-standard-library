@@ -328,14 +328,14 @@ public:
 
 
 private:
-    using array_type = unique_ptr<value_type[], function<void(pointer)>>;
+    using Array_type = unique_ptr<value_type[], function<void(pointer)>>;
 
     allocator_type alloc;
     size_type arr_size;
     size_type arr_cap;
-    array_type arr;
+    Array_type arr;
 
-    array_type allocate(size_type n)
+    Array_type allocate(size_type n)
     {
         auto del = [this, n](T* p)
         {
@@ -346,7 +346,7 @@ private:
             AT::deallocate(this->alloc, p, n);
         };
 
-        return array_type(AT::allocate(this->alloc, n), del);
+        return Array_type(AT::allocate(this->alloc, n), del);
     }
 
 
@@ -367,7 +367,7 @@ private:
     // Reallocates underlying array w/ new capacity
     void reallocate_arr(size_type new_cap)
     {
-        array_type new_arr(allocate(new_cap));
+        Array_type new_arr(allocate(new_cap));
         move(begin(), end(), new_arr.get());
 
         hsl::swap(arr, new_arr);
@@ -385,7 +385,7 @@ private:
         {
             size_type new_cap = next_cap(new_size);
 
-            array_type new_arr(allocate(new_cap));
+            Array_type new_arr(allocate(new_cap));
             uninitialized_move_a(cbegin(), pos, new_arr.get());
             uninitialized_move_a(pos, cend(), new_arr.get() + pos_idx + count);
 
