@@ -22,6 +22,7 @@ public:
     using value_type = T;
     using allocator_type = Alloc;
     using size_type = size_t;
+    using difference_type = ptrdiff_t;
     using reference = value_type&;
     using const_reference = const value_type&;
     using pointer = typename AT::pointer;
@@ -334,14 +335,19 @@ private:
     size_type arr_cap;
     array_type arr;
 
-    array_type allocate(size_type cap)
+    array_type allocate(size_type n)
     {
-        using namespace placeholders;
-        function<void(pointer)> del = bind(&vector::deallocate, this, _1);
-        return array_type(AT::allocate(alloc, cap), del);
-    }
+        auto del = [this, n](T* p)
+        {
+            for (size_type i = 0; i < n; ++i)
+            {
+                AT::destroy(this->alloc, p + i);
+            }
+            AT::deallocate(this->alloc, p, n);
+        };
 
-    void deallocate(pointer p) { AT::deallocate(alloc, p, capacity()); }
+        return array_type(AT::allocate(this->alloc, n), del);
+    }
 
 
     // Returns capacity of array after insert or push
